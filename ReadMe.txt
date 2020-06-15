@@ -79,5 +79,11 @@ Suggestions for further improvement:
 3.	add columns in reporting for each file
 4.	add link to folder in report
 5.	make a configuration parameter to run few testcases
+6.      Move towards postgres(database) and text files as baselines
+7. 	Asynhchronus request calls
+8. 	Add PSR datasets once we freeze it(Performance)
+9.	include Yourkit with this if possible.
+
+
 
 
