@@ -5,6 +5,7 @@ import os
 import sys
 import requests
 import datetime
+import time
 
 def createDirectory( dirName):   
     if not os.path.exists(dirName):
@@ -15,7 +16,9 @@ def createDirectory( dirName):
         #print("Directory " , dirName ,  " already exists")   
     
 
-def generateHTMLReport(report_id,report_path,result_dict,result_colors):
+def generateHTMLReport(report_id,bacthrun_results_path,result_dict,filenames,detailed_result_dict,result_colors):
+    report_path=bacthrun_results_path+"testcasereport.html"
+
     total_cases=len(result_dict)
     f = open(report_path,'w')
     message="""<html>
@@ -35,6 +38,20 @@ def generateHTMLReport(report_id,report_path,result_dict,result_colors):
 
     message += "<br/>"
     message += "<table>"
+    message += "<tr>"
+    message += "<th> TestCase </th>"
+    message += "<th> Result </th>"
+
+    for filename in filenames:
+        message += "<th>"
+        message += filename
+        message += "</th>"
+
+    message += "<th>"
+    message +=  "Testcase result folder"
+    message += "</th>"
+
+    message += "</tr>"
     for test_id in result_dict:
         # create the colored cell:
         color = result_colors[result_dict[test_id]]
@@ -44,6 +61,14 @@ def generateHTMLReport(report_id,report_path,result_dict,result_colors):
         if(result_dict[test_id] == 'success'):
             passed=passed+1
 
+        detailed_result = detailed_result_dict[test_id];
+        for filename in filenames:
+            message += "<td>"+detailed_result[filename]+"</td>"
+
+        path = bacthrun_results_path+"/"+test_id+"/"
+        message += "<td>"+path+"</td>"
+
+        message += "</tr>"
     message+="</table>"
     message+="<br/>"
     message+="Passed Testcases = "+str(passed)
@@ -55,7 +80,17 @@ def generateHTMLReport(report_id,report_path,result_dict,result_colors):
     </html>"""
     f.write(message)
     f.close()
+    print("Please Find the Report Here "+ report_path)
     return;
+
+def printPercentage(num,totalCount):
+    percentage = (100*num)/totalCount
+    #cursor up one line
+    sys.stdout.write('\x1b[1A')
+
+    #delete last line
+    sys.stdout.write('\x1b[2K')
+    print("Executed "+ str(int(percentage))+" % testcases")
 
 batchrunid=''
 try:
@@ -132,8 +167,15 @@ createDirectory(bacthrun_results_path)
 
 cofile = open(consolidatedoutputfile, 'w')
 cbfile = open(consolidatedbaselinefile, 'w')
+
+print("executing testcases now !!")
+
+total_cases = len(testcases)
+
+executedcases = 0
+print("\n")
 for testcase in testcases:
-  print(testcase)
+  #print(testcase)
   url = 'http://localhost:8080/dcro_engine_service/trigger'
   inputdata = {'inputFolderName':testcase, 'orderPlaceDate':'2006-10-30'}
   res = requests.post(url, json =inputdata)
@@ -143,7 +185,7 @@ for testcase in testcases:
   
   if(res.status_code != 200):
     result_dict[testcase]='error'
-    print(res.status_code)
+    #print(res.status_code)
     continue;
   
   cofile.write(testcase)
@@ -154,7 +196,7 @@ for testcase in testcases:
 
   testcase_result_dict={}
   for filename in filenames:
-    print(filename)
+    #print(filename)
     cofile.write('\n')
     cofile.write(filename)
     cofile.write('\n')
@@ -202,7 +244,7 @@ for testcase in testcases:
     #baselineparquet.to_csv(baselinecsvfilepath)
     
   
-    print(outputparquet.equals(baselineparquet))
+    #print(outputparquet.equals(baselineparquet))
     if(not(outputparquet.equals(baselineparquet))):
         testcase_result_dict[filename]='Diff'
         isPassed='failure'
@@ -216,13 +258,15 @@ for testcase in testcases:
   cbfile.write('\n')
   result_dict[testcase]=isPassed
   detailed_result_dict[testcase]=testcase_result_dict;
+  executedcases = executedcases + 1
+  printPercentage(executedcases,total_cases)
 
 cofile.close()
-print(result_dict)
-print(detailed_result_dict)
-report_path=bacthrun_results_path+"testcasereport.html"
-generateHTMLReport(batchrunid,report_path,result_dict,result_colors)
-print("Please Find the Report Here "+ report_path)
+cbfile.close()
+#print(result_dict)
+#print(detailed_result_dict)
+generateHTMLReport(batchrunid,bacthrun_results_path,result_dict,filenames,detailed_result_dict,result_colors)
+
 
 
 
