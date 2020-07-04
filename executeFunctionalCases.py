@@ -170,6 +170,13 @@ cbfile = open(consolidatedbaselinefile, 'w')
 
 print("executing testcases now !!")
 
+argsdata = sys.argv
+argslen = len(argsdata)
+
+if argslen > 2:
+ testcases.clear()
+ testcases = argsdata[2:]
+
 total_cases = len(testcases)
 
 executedcases = 0
