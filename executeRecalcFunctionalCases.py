@@ -184,7 +184,8 @@ argslen = len(argsdata)
 
 if argslen > 2:
  testcasesjson.clear()
- testcasesjson = argsdata[2:]
+ commandlinedata = argsdata[2:]
+ testcasesjson = commandlinedata.split(",")
 
 print("\n")
 for testcase in testcasesjson:
@@ -204,7 +205,7 @@ for testcase in testcasesjson:
     
   recalctestcasefile = testcasepath+"/"+jsonfile 
   #print(recalctestcasefile)
-  inputfoldername = jsonfile.replace('.json','')
+  #inputfoldername = jsonfile.replace('.json','')
   jsonfile = ""
   total_Jsoncases = total_Jsoncases + 1
     
@@ -214,17 +215,17 @@ for testcase in testcasesjson:
   
   isPassed='success';
 
-  jsonResponse_dict[inputfoldername]=res.text
+  jsonResponse_dict[testcase]=res.text
   
   if(res.status_code != 200):
-    result_dict[inputfoldername]='error'
+    result_dict[testcase]='error'
     #print(res.status_code)
     continue;
   
-  cofile.write(inputfoldername)
+  cofile.write(testcase)
   cofile.write('\n')
 
-  cbfile.write(inputfoldername)
+  cbfile.write(testcase)
   cbfile.write('\n')
 
   testcase_result_dict={}
@@ -237,9 +238,9 @@ for testcase in testcasesjson:
     cbfile.write('\n')
     cbfile.write(filename)
     cbfile.write('\n')
-    outputfile=output_data_path+inputfoldername+"/"+filename+".parquet"
+    outputfile=output_data_path+testcase+"/"+filename+".parquet"
 
-    baselinefile=baseline_data_path+inputfoldername+"/"+filename+".parquet"
+    baselinefile=baseline_data_path+testcase+"/"+filename+".parquet"
 
     #parquet1 = pq.read_table(outputfile)
     #parquet2 = pq.read_table(baselinefile)
@@ -252,7 +253,7 @@ for testcase in testcasesjson:
     outputparquet.sort_values(by=sortcolumnnames, inplace=True)
     outputparquet.reset_index(drop=True, inplace=True)
     #print(outputparquet)
-    outputtextfiledir=bacthrun_results_path+inputfoldername+"/"
+    outputtextfiledir=bacthrun_results_path+testcase+"/"
     createDirectory(outputtextfiledir)
     outputtextfilepath=outputtextfiledir+filename+"output.txt"
     tfile = open(outputtextfilepath, 'w')
@@ -266,9 +267,9 @@ for testcase in testcasesjson:
     baselineparquet.sort_values(by=sortcolumnnames, inplace=True)
     baselineparquet.reset_index(drop=True, inplace=True)
     #print(baselineparquet)
-    baselinetextfiledir=bacthrun_results_path+inputfoldername+"/"
+    baselinetextfiledir=bacthrun_results_path+testcase+"/"
     createDirectory(baselinetextfiledir)
-    baselinetextfilepath=bacthrun_results_path+inputfoldername+"/"+filename+"baseline.txt"
+    baselinetextfilepath=bacthrun_results_path+testcase+"/"+filename+"baseline.txt"
     tfile = open(baselinetextfilepath, 'w')
     tfile.write(baselineparquet.to_string())
     cbfile.write(baselineparquet.to_string())
@@ -289,8 +290,8 @@ for testcase in testcasesjson:
   cofile.write('\n')
   cbfile.write('\n')
   cbfile.write('\n')
-  result_dict[inputfoldername]=isPassed
-  detailed_result_dict[inputfoldername]=testcase_result_dict;
+  result_dict[testcase]=isPassed
+  detailed_result_dict[testcase]=testcase_result_dict;
   executedcases = executedcases + 1
   printPercentage(executedcases,total_Jsoncases)
     

@@ -175,7 +175,9 @@ argslen = len(argsdata)
 
 if argslen > 2:
  testcases.clear()
- testcases = argsdata[2:]
+ commandlinedata = argsdata[2]
+ print(commandlinedata)
+ testcases = commandlinedata.split(",")
 
 total_cases = len(testcases)
 
