@@ -106,9 +106,9 @@ print(batchrunid)
 #input_data_path="/Users/1022177/Desktop/PythonScripts/dcroengineinput/"
 current_dir = os.getcwd()
 
-output_data_path=current_dir+"/dcroengineoutput/"
+output_data_path=current_dir+"/dcroengineoutput/BATCH/"
 
-baseline_data_path=current_dir+"/outputbaselines/"
+baseline_data_path=current_dir+"/outputbaselines/BATCH/"
 
 results_path=current_dir+"/testresults/"
 
