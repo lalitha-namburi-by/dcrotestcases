@@ -182,14 +182,18 @@ baseinputdir = current_dir + "/dcroengineinput"
 argsdata = sys.argv
 argslen = len(argsdata)
 
-if argslen > 2:
- testcasesjson.clear()
- commandlinedata = argsdata[2:]
+if argslen > 1:
+ #testcasesjson.clear()
+ commandlinedata = argsdata[1]
  testcasesjson = commandlinedata.split(",")
 
 print("\n")
 for testcase in testcasesjson:
   #print(testcase)
+  testcase = testcase.strip()
+  if(testcase == ""):
+    continue;
+
   url = 'http://localhost:8080/dcro_engine_service/recalculate?reset=false&force_optimize=false'
   headers = {'Accept' : 'application/json', 'Content-Type' : 'application/json'}
 

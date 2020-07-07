@@ -173,10 +173,9 @@ print("executing testcases now !!")
 argsdata = sys.argv
 argslen = len(argsdata)
 
-if argslen > 2:
- testcases.clear()
- commandlinedata = argsdata[2]
- print(commandlinedata)
+if argslen > 1:
+ #testcases.clear()
+ commandlinedata = argsdata[1]
  testcases = commandlinedata.split(",")
 
 total_cases = len(testcases)
@@ -185,6 +184,10 @@ executedcases = 0
 print("\n")
 for testcase in testcases:
   #print(testcase)
+  testcase = testcase.strip()
+  if(testcase == ""):
+    continue;
+
   url = 'http://localhost:8080/dcro_engine_service/trigger'
   inputdata = {'inputFolderName':testcase, 'orderPlaceDate':'2006-10-30'}
   res = requests.post(url, json =inputdata)
