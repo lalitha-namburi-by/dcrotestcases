@@ -50,6 +50,7 @@ def generateHTMLReport(report_id,bacthrun_results_path,result_dict,filenames,det
     message += "<th>"
     message +=  "Testcase result folder"
     message += "</th>"
+    message += "<th> JsonResponse </th>"
 
     message += "</tr>"
     for test_id in result_dict:
@@ -67,6 +68,7 @@ def generateHTMLReport(report_id,bacthrun_results_path,result_dict,filenames,det
 
         path = bacthrun_results_path+"/"+test_id+"/"
         message += "<td>"+path+"</td>"
+        message += "<td>"+jsonResponse_dict[test_id]+"</td>"
 
         message += "</tr>"
     message+="</table>"
@@ -106,9 +108,9 @@ print(batchrunid)
 #input_data_path="/Users/1022177/Desktop/PythonScripts/dcroengineinput/"
 current_dir = os.getcwd()
 
-output_data_path=current_dir+"/dcroengineoutput/BATCH/"
+output_data_path=current_dir+"/dcroengineoutput/ORDER_RECALC/"
 
-baseline_data_path=current_dir+"/outputbaselines/BATCH/"
+baseline_data_path=current_dir+"/outputbaselines/ORDER_RECALC/"
 
 results_path=current_dir+"/testresults/"
 
@@ -122,7 +124,7 @@ result_colors = {
 
 #testcases=["DCRO-100.01", "DCRO-100.02", "DCRO-100.03","DCRO-100.04", "DCRO-100.05", "DCRO-100.06","DCRO-100.07", "DCRO-100.08", "DCRO-100.09","DCRO-100.10", "DCRO-100.11", "DCRO-100.12","DCRO-100.13", "DCRO-100.14", "DCRO-100.15","DCRO-100.16", "DCRO-100.17", "DCRO-100.18","DCRO-100.19", "DCRO-100.20", "DCRO-100.21","OOPT-GAA319.03", "OOPT-GAA319.07", "OOPT-GAA319.09","OOPT-GAA319.11", "OOPT-GAA319.13", "OOPT-GAA319.15", "OOPT-GAA319.17","OOPT-GEX334.01","OOPT-GEX334.02","OOPT-GEX334.03","OOPT-GEX334.04","OOPT-GEX334.05","OOPT-GEX334.09","OOPT-GEX334.10"]
 
-testcases=["DCRO-100.01","DCRO-100.02","DCRO-100.03","DCRO-100.04","DCRO-100.05","DCRO-100.06","DCRO-100.07","DCRO-100.08","DCRO-100.09","DCRO-100.10","DCRO-100.11","DCRO-100.12","DCRO-100.13","DCRO-100.14","DCRO-100.15","DCRO-100.16","DCRO-100.17","DCRO-100.18","DCRO-100.19","DCRO-100.20","DCRO-100.21","DCRO-100.22","DCRO-100.23","DCRO-100.24","DCRO-100.25","DCRO-100.26","DCRO-100.27","DCRO-100.28","DCRO-100.29","DCRO-100.30","DCRO-100.31","DCRO-100.32","DCRO-100.33","DCRO-100.34","DCRO-100.35","DCRO-100.36","DCRO-100.37","OOPT-GAA319.03","OOPT-GAA319.07","OOPT-GAA319.09","OOPT-GAA319.11","OOPT-GAA319.13","OOPT-GAA319.14","OOPT-GAA319.15","OOPT-GAA319.17","OOPT-GEX334.01","OOPT-GEX334.02","OOPT-GEX334.03","OOPT-GEX334.04","OOPT-GEX334.05","OOPT-GEX334.09","OOPT-GEX334.10","OOPT-GSD335.01","OOPT-GSD335.02","OOPT-GSD335.04","OOPT-GSD335.06","OOPT-GSD335.07","OOPT-GSD335.08","OOPT-GSD335.10","OOPT-GSD335.16","OOPT-GSD335.17","OOPT-GSD335.18","OOPT-MBG327.01","OOPT-MBG327.02","OOPT-MBG327.03","OOPT-MBG327.04","OOPT-MBG327.05","OOPT-MBG327.06","OOPT-MBG327.07","OOPT-MBG327.08","OOPT-MBG327.09","OOPT-MBG327.10","OOPT-MBG327.11","OOPT-MBG327.12","OOPT-MBG327.13","OOPT-MBG327.14","OOPT-MBG327.15","OOPT-MBG327.16","OOPT-MBG327.17","OOPT-MBG327.18","OOPT-MBG327.19","OOPT-MBG327.20","OOPT-MBG327.21"]
+testcasesjson=["DCRO-100.01","DCRO-100.02","DCRO-100.03","DCRO-100.04","DCRO-100.05","DCRO-100.06","DCRO-100.07","DCRO-100.08","DCRO-100.09","DCRO-100.10","DCRO-100.11","DCRO-100.12","DCRO-100.13","DCRO-100.14","DCRO-100.15","DCRO-100.16","DCRO-100.17","DCRO-100.18","DCRO-100.19","DCRO-100.20","DCRO-100.21","DCRO-100.22","DCRO-100.23","DCRO-100.24","DCRO-100.25","DCRO-100.26","DCRO-100.27","DCRO-100.28","DCRO-100.29","DCRO-100.30","DCRO-100.31","DCRO-100.32","DCRO-100.33","DCRO-100.34","DCRO-100.35","DCRO-100.36","DCRO-100.37","OOPT-GAA319.03","OOPT-GAA319.07","OOPT-GAA319.09","OOPT-GAA319.11","OOPT-GAA319.13","OOPT-GAA319.14","OOPT-GAA319.15","OOPT-GAA319.17","OOPT-GEX334.01","OOPT-GEX334.02","OOPT-GEX334.03","OOPT-GEX334.04","OOPT-GEX334.05","OOPT-GEX334.09","OOPT-GEX334.10","OOPT-GSD335.01","OOPT-GSD335.02","OOPT-GSD335.04","OOPT-GSD335.06","OOPT-GSD335.07","OOPT-GSD335.08","OOPT-GSD335.10","OOPT-GSD335.16","OOPT-GSD335.17","OOPT-GSD335.18","OOPT-MBG327.01","OOPT-MBG327.02","OOPT-MBG327.03","OOPT-MBG327.04","OOPT-MBG327.05","OOPT-MBG327.06","OOPT-MBG327.07","OOPT-MBG327.08","OOPT-MBG327.09","OOPT-MBG327.10","OOPT-MBG327.11","OOPT-MBG327.12","OOPT-MBG327.13","OOPT-MBG327.14","OOPT-MBG327.15","OOPT-MBG327.16","OOPT-MBG327.17","OOPT-MBG327.18","OOPT-MBG327.19","OOPT-MBG327.20","OOPT-MBG327.21"]
 
 orderheadercolumns=["source","dest","transmode","createdate","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype"]
 orderheadersortcolumns=["source","dest","transmode","createdate","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype"]
@@ -160,6 +162,7 @@ filenames=["orderexception","orderheader","ordersku","orderskudetail","orderskut
 
 result_dict={}
 detailed_result_dict={}
+jsonResponse_dict={}
 
 consolidatedoutputfile = bacthrun_results_path+"consolidatedoutputfile.txt"
 consolidatedbaselinefile = bacthrun_results_path+"consolidatedbaselinefile.txt"
@@ -170,30 +173,53 @@ cbfile = open(consolidatedbaselinefile, 'w')
 
 print("executing testcases now !!")
 
+total_cases = len(testcasesjson)
+total_Jsoncases = 0
+
+executedcases = 0
+baseinputdir = current_dir + "/dcroengineinput"
+
 argsdata = sys.argv
 argslen = len(argsdata)
 
 if argslen > 1:
- #testcases.clear()
+ #testcasesjson.clear()
  commandlinedata = argsdata[1]
- testcases = commandlinedata.split(",")
+ testcasesjson = commandlinedata.split(",")
 
-total_cases = len(testcases)
-
-executedcases = 0
 print("\n")
-for testcase in testcases:
+for testcase in testcasesjson:
   #print(testcase)
   testcase = testcase.strip()
   if(testcase == ""):
     continue;
 
-  url = 'http://localhost:8080/dcro_engine_service/trigger'
-  inputdata = {'inputFolderName':testcase, 'orderPlaceDate':'2006-10-30'}
-  res = requests.post(url, json =inputdata)
+  url = 'http://localhost:8080/dcro_engine_service/recalculate?reset=false&force_optimize=false'
+  headers = {'Accept' : 'application/json', 'Content-Type' : 'application/json'}
+
+  testcasepath = baseinputdir + "/"+testcase
+
+  testcasefileslist = os.listdir(testcasepath)
+  for file in testcasefileslist:
+    if file.endswith("json"):
+       jsonfile = file
+    
+  if len(jsonfile) == 0:
+    continue
+    
+  recalctestcasefile = testcasepath+"/"+jsonfile 
+  #print(recalctestcasefile)
+  #inputfoldername = jsonfile.replace('.json','')
+  jsonfile = ""
+  total_Jsoncases = total_Jsoncases + 1
+    
+  data1 = open(recalctestcasefile, 'rb')
+  res = requests.post(url,data=data1,headers = headers)
   #print(x.text)
   
   isPassed='success';
+
+  jsonResponse_dict[testcase]=res.text
   
   if(res.status_code != 200):
     result_dict[testcase]='error'
@@ -271,8 +297,8 @@ for testcase in testcases:
   result_dict[testcase]=isPassed
   detailed_result_dict[testcase]=testcase_result_dict;
   executedcases = executedcases + 1
-  printPercentage(executedcases,total_cases)
-
+  printPercentage(executedcases,total_Jsoncases)
+    
 cofile.close()
 cbfile.close()
 #print(result_dict)
