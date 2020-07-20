@@ -1,0 +1,41 @@
+{
+    "reset": "false",
+    "force_optimize": "false",
+    "orderPlaceDate": "2006-10-30",
+    "inputFolderName": "OOPT-REC_10.03",
+    "groupOrderId": "OOPT-REC_10.03",
+    "orderGroup": "3624893973",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "OOPT-REC10.03-OGM1",
+            "orderId": "OOPT-REC10.03-OGM1",
+            "items": 
+			[
+                {  "itemId": "2216060013",
+                    "sourceId": "4273352219",
+                    "destinationId": "3624883278",
+                    "suggestedSoq": 67,
+                    "modifiedSoq": 210
+                  
+                }
+                
+            ]
+        },
+		{
+            "orderGroupMember": "OOPT-REC10.03-OGM2",
+            "orderId": "OOPT-REC10.03-OGM2",
+            "items": 
+			[
+              	{
+                    "itemId": "2216060016",
+                    "sourceId": "4273352219",
+                    "destinationId": "3624883278",
+                    "suggestedSoq": 67,
+                    "modifiedSoq": 67
+                }
+                                
+            ]
+        }
+    ]
+}
