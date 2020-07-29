@@ -61,9 +61,13 @@ def generateHTMLReport(report_id,bacthrun_results_path,result_dict,filenames,det
         if(result_dict[test_id] == 'success'):
             passed=passed+1
 
-        detailed_result = detailed_result_dict[test_id];
-        for filename in filenames:
-            message += "<td>"+detailed_result[filename]+"</td>"
+        defaultMessage = 'Skipped due to catastrophic error.'
+        detailed_result = detailed_result_dict.get(test_id, defaultMessage)
+        if (isinstance(detailed_result, str)):
+            message += "<td>"+defaultMessage+"</td>"
+        else:
+            for filename in filenames:
+                message += "<td>"+detailed_result[filename]+"</td>"
 
         path = bacthrun_results_path+"/"+test_id+"/"
         message += "<td>"+path+"</td>"
