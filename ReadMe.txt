@@ -61,7 +61,7 @@ After this, in your local, bring the localhost:8080 hosting server up, or from E
 
 After the server is up, execute the following python script.
 	In your terminal type, 
-Python executeTestCases.py
+Python executeFunctionalCases_1.1.py
 This will run the test cases.
 
 There will be testCaseResult directory created, corresponding to the latest timestamp open the report and check 
@@ -74,13 +74,10 @@ Or compare the two files using BeyondComapre or Compare it,
 
 Suggestions for further improvement:
 
-1.	consolidate the all 8 files results
-2.	handle the case where baselines are not present
-3.	make a configuration parameter to run few testcases
-6.      Move towards postgres(database) and text files as baselines
-7. 	Asynhchronus request calls
-8. 	Add PSR datasets once we freeze it(Performance)
-9.	include Yourkit with this if possible.
+1.      Move towards postgres(database) and text files as baselines
+2. 	Asynhchronus request calls
+3. 	Add PSR datasets once we freeze it(Performance)
+4.	include Yourkit with this if possible.
 
 
 
