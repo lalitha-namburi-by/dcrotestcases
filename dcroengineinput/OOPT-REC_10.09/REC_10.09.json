@@ -4,7 +4,7 @@
     "orderPlaceDate": "2006-10-31",
     "inputFolderName": "OOPT-REC_10.09",
     "groupOrderId": "OOPT-REC_10.09",
-    "orderGroup": "3624893973",
+    "orderGroup": "3630435099",
     "orderGroupMembers": 
 	[
         {
@@ -12,9 +12,9 @@
             "orderId": "OOPT-REC10.09-OGM1",
             "items": 
 			[
-                {  "itemId": "2216060013",
-                    "sourceId": "4273352219",
-                    "destinationId": "3624883278",
+                {  "itemId": "2216065779",
+                    "sourceId": "4273530965",
+                    "destinationId": "3630424404",
                     "suggestedSoq": 55,
                     "modifiedSoq": 10
                   
@@ -28,9 +28,9 @@
             "items": 
 			[
               	{
-                    "itemId": "2216060016",
-                    "sourceId": "4273352219",
-                    "destinationId": "3624883278",
+                    "itemId": "2216065782",
+                    "sourceId": "4273530965",
+                    "destinationId": "3630424404",
                     "suggestedSoq": 67,
                     "modifiedSoq": 67
                 }
