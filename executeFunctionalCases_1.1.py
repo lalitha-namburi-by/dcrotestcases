@@ -41,7 +41,7 @@ def executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoi
     except ConnectionError as e:    # This is the correct syntax
             print_red("Looks like service is Down !!")
             response = "No response"
-    time.sleep(.25)
+    time.sleep(.05)
     return response
 
 #This function tells us the number of lines in a file.
@@ -284,8 +284,8 @@ createDirectory(bacthrun_results_path);
 
 batch_cases_file_path = current_dir + "/batchcases"
 
-orderheadercolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","forceoptimize"]
-orderheadersortcolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","forceoptimize"]
+orderheadercolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","optimizforcedsw"]
+orderheadersortcolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","optimizforcedsw"]
 
 orderexceptioncolumns = ["exception","exceptiondate","descr","item","source","dest","transmode","ordergroup","ordergroupmember"]
 orderexceptionsortcolumns=["exception","exceptiondate","descr","item","source","dest","transmode","ordergroup","ordergroupmember"]
@@ -311,8 +311,8 @@ vehicleloadlinesortcolumns=["item","primaryitem","qty","schedshipdate","schedarr
 vehicleloadtotalcolumns=[ "uom","qty"]
 vehicleloadtotalsortcolumns=["uom","qty"]
 
-orderheaderhistcolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","forceoptimize"]
-orderheaderhistsortcolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","forceoptimize"]
+orderheaderhistcolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","optimizforcedsw"]
+orderheaderhistsortcolumns=["source","dest","transmode","orderplacedate","departuredate","deliverydate","arrivdate","totalleadtime","transitdur","unloaddur","needcovdur","mincovdur","finalcovdate","finalcovdur","delaydur","orderskucount","orderskusoqcount","networkmincovdur","networkmincovdate","needcovdate","maxcovdur","orderbuildrule","duestatus","networkminstatus","loadsolutionstatus","loadstatus","approvalstatus","precisionbuildsw","ordertype","ordergroup","ordergroupmember","ordergroupparam","ordergroupbuildrule","precisionloadsw","vehicleloadcount","lanetype","keepuseradjsw","optimizforcedsw"]
 
 ordertotalhistcolumns=["type","uom", "qty","unroundedqty"]
 ordertotalhistsortcolumns=["type","uom", "qty","unroundedqty"]
