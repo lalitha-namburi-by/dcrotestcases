@@ -33,9 +33,9 @@ def createDirectory( dirName):
 #This Function executes a testcase by triggering the service
 def executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url):
     response = 'executed'
-    inputdata = {'inputFolderName':testCaseName, 'orderPlaceDate':orderPlaceDate,'fallback_order_days':fallbackOrderDays}
+    inputdata = {'orderPlaceDate':orderPlaceDate,'fallback_order_days':fallbackOrderDays}
     try:
-        res = requests.post(service_endpoint_url, json =inputdata)
+        res = requests.post(service_endpoint_url+"?inputFolderName="+testCaseName, json =inputdata)
         if(res.status_code != 200):
             response ='error'
     except ConnectionError as e:    # This is the correct syntax
@@ -247,16 +247,16 @@ def generateHTMLReport(report_name,results_path,files_with_differences_dict,exec
     return;
 
 #service endpoint URL
-service_endpoint_url = 'http://localhost:8080/dcro_engine_service/trigger'
+service_endpoint_url = 'http://localhost:8080/test_dcro_engine_service/trigger'
 
 #fetch the current directory path where our script resides
 current_dir = os.getcwd()
 
 #directory where all the baseline parquet files resides
-baselines_dir = current_dir+"/outputbaselines/BATCH/"
+baselines_dir = current_dir+"/outputbaselines/"
 
 #directory where all the output files of testcase gets generated
-output_dir = current_dir+"/dcroengineoutput/BATCH/"
+output_dir = current_dir+"/dcroengineoutput/"
 
 #directory where report fo batch run will be generated
 results_path = current_dir+"/testresults/"

@@ -108,9 +108,9 @@ print(batchrunid)
 #input_data_path="/Users/1022177/Desktop/PythonScripts/dcroengineinput/"
 current_dir = os.getcwd()
 
-output_data_path=current_dir+"/dcroengineoutput/ORDER_RECALC/"
+output_data_path=current_dir+"/dcroengineoutput/"
 
-baseline_data_path=current_dir+"/outputbaselines/ORDER_RECALC/"
+baseline_data_path=current_dir+"/outputbaselines/"
 
 results_path=current_dir+"/testresults/"
 
@@ -194,7 +194,7 @@ for testcase in testcasesjson:
   if(testcase == ""):
     continue;
 
-  url = 'http://localhost:8080/dcro_engine_service/recalculate?reset=false&force_optimize=false'
+  url = 'http://localhost:8080/test_dcro_engine_service/recalculate?reset=false&force_optimize=false'
   headers = {'Accept' : 'application/json', 'Content-Type' : 'application/json'}
 
   testcasepath = baseinputdir + "/"+testcase
