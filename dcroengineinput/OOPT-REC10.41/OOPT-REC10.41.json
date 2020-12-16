@@ -1,0 +1,30 @@
+{
+    "reset": "true",
+    "force_optimize": "true",
+    "orderPlaceDate": "2006-10-30",
+    "inputFolderName": "OOPT-REC10.41",
+    "groupOrderId": "20201041",
+    "orderGroup": "3737563535",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "OOPT-REC10.41-OGM1",
+            "orderId": "20201041-1",
+            "items": 
+			[
+                
+                
+                
+            ]
+        },
+		{
+            "orderGroupMember": "OOPT-REC10.41-OGM2",
+            "orderId": "20201041-2",
+            "items": 
+			[
+			
+                                
+            ]
+        }
+    ]
+}

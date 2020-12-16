@@ -1,0 +1,66 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2006-10-30",
+    "inputFolderName": "OOPT-REC10.16",
+    "groupOrderId": "20201016",
+    "orderGroup": "3656293687",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "OOPT-REC10.16-OGM1",
+            "orderId": "20201016-1",
+            "items": 
+			[
+                {  "itemId": "2216092687",
+                    "sourceId": "4274365113",
+                    "destinationId": "3656282992",
+                    "suggestedSoq": 25,
+                    "modifiedSoq": 20
+                  
+                },{  "itemId": "2216092688",
+                    "sourceId": "4274365113",
+                    "destinationId": "3656282992",
+                    "suggestedSoq": 25,
+                    "modifiedSoq": 20
+                  
+                },{  "itemId": "2216092689",
+                    "sourceId": "4274365113",
+                    "destinationId": "3656282992",
+                    "suggestedSoq": 31,
+                    "modifiedSoq": 15
+                  
+                }
+                
+            ]
+        },
+		{
+            "orderGroupMember": "OOPT-REC10.16-OGM2",
+            "orderId": "20201016-2",
+            "items": 
+			[
+              	{  "itemId": "2216092690",
+                    "sourceId": "4274365113",
+                    "destinationId": "3656282992",
+                    "suggestedSoq": 31,
+                    "modifiedSoq": 20
+                  
+                },	{  "itemId": "2216092691",
+                    "sourceId": "4274365113",
+                    "destinationId": "3656282992",
+                    "suggestedSoq": 16,
+                    "modifiedSoq": 20
+                  
+                },	{  "itemId": "2216092692",
+                    "sourceId": "4274365113",
+                    "destinationId": "3656282992",
+                    "suggestedSoq": 22,
+                    "modifiedSoq": 20
+                  
+                }
+			
+                                
+            ]
+        }
+    ]
+}
