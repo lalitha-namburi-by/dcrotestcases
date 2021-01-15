@@ -31,16 +31,17 @@ def createDirectory( dirName):
     return;
 
 #This Function executes a testcase by triggering the service
-def executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url):
+def executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url, isLongTermProjections):
     response = 'executed'
-    inputdata = {'orderPlaceDate':orderPlaceDate,'fallback_order_days':fallbackOrderDays}
+    inputdata = {'orderPlaceDate':orderPlaceDate,'fallback_order_days':fallbackOrderDays,'isLongTermProjections':isLongTermProjections}
     try:
         res = requests.post(service_endpoint_url+"?inputFolderName="+testCaseName, json =inputdata)
         if(res.status_code != 200):
             response ='error'
     except ConnectionError as e:    # This is the correct syntax
             print_red("Looks like service is Down !!")
-            response = "No response"
+            print_red("Exiting script now !!")
+            sys.exit(1)
     time.sleep(.05)
     return response
 
@@ -352,14 +353,12 @@ for testCaseString in testCasesStringList:
     testCaseName = testCaseData[0]
     orderPlaceDate = testCaseData[1]
     fallbackOrderDays = int(testCaseData[2])
-    result = executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url)
-    if(result == "No response"):
-        print_red("Exiting script now !!")
-        sys.exit(1)
+    result1 = executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url,"false")
+    result2 = executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url,"true")
     executed_cases = executed_cases + 1
     executed_cases_list.append(testCaseName)
     printPercentage(executed_cases,total_cases)
-    if(result == 'error'):
+    if(result1 == 'error' or result2 == 'error'):
         error_cases_list.append(testCaseName)
         continue;
     files_with_differences = []
