@@ -100,7 +100,7 @@ try:
 except IndexError as e:
     print("No Batch run id provided Using Default")
     current_time = datetime.datetime.now()
-    batchrunid="Report-"+str(current_time)
+    batchrunid="Report-"+current_time.strftime("%m-%d-%Y-%H-%M-%S")
 
 
 print(batchrunid)
