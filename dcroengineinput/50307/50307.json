@@ -1,0 +1,36 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2021-02-01",
+    "inputFolderName": "50307",
+    "groupOrderId": "50307",
+    "orderGroup": "2001",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "SB-001",
+            "orderId": "50307-001",
+            "items": 
+			[
+                {  "itemId": "5001",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 33,
+                    "modifiedSoq": 33
+                  
+                }
+                
+            ]
+        },
+		{
+            "orderGroupMember": "SB-002",
+            "orderId": "50307-002",
+            "items": 
+			[
+              	
+                
+                                
+            ]
+        }
+    ]
+}

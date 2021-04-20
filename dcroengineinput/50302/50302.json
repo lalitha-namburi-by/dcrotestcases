@@ -1,0 +1,63 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2021-02-01",
+    "inputFolderName": "50302",
+    "groupOrderId": "50302",
+    "orderGroup": "2001",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "SB-001",
+            "orderId": "50302-001",
+            "items": 
+			[
+                {  "itemId": "5001",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 33,
+                    "modifiedSoq": 33
+                  
+                },   
+				{  "itemId": "5002",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 22,
+                    "modifiedSoq": 22
+                  
+                }
+                
+            ]
+        },
+		{
+            "orderGroupMember": "SB-002",
+            "orderId": "50302-002",
+            "items": 
+			[
+              	{
+                    "itemId": "5001",
+                    "sourceId": "6002",
+                    "destinationId": "7001",
+                    "suggestedSoq": 11,
+                    "modifiedSoq": 25
+                },
+				{
+                    "itemId": "5002",
+                    "sourceId": "6002",
+                    "destinationId": "7001",
+                    "suggestedSoq": 11,
+                    "modifiedSoq": 88
+                },{
+                    "itemId": "5003",
+                    "sourceId": "6002",
+                    "destinationId": "7001",
+                    "suggestedSoq": 11,
+                    "modifiedSoq": 45
+                }
+				
+                
+                                
+            ]
+        }
+    ]
+}
