@@ -119,7 +119,8 @@ enddatelist = []
 soqtotallist =[]
 splitpercentagelist =[]
 vendorlist = []
-
+ranklist = []
+volumelist =[]
 filepath = output_dir+'summary.txt'
 text_file = open(filepath, 'w')
 for key,value in buyguide_dict.items():
@@ -154,13 +155,17 @@ for key,value in buyguide_dict.items():
 				if startdate <= timestamp <= enddate:
 				   soqtotal = soqtotal + soqObject.soq
 			print(soqtotal)
+			rank = row['PRIORITY']
+			volume = row['VOLUME']
+			ranklist.append(rank)
+			volumelist.append(volume)
 			startdatelist.append(startdate)
 			enddatelist.append(enddate)
 			soqtotallist.append(soqtotal)
 			splitpercentagelist.append(split_percentage)
 			vendorlist.append(key1)
 
-	data = {'startdate':startdatelist,'enddate':enddatelist,'vendor':vendorlist,'soq':soqtotallist,'buyguide percentage':splitpercentagelist}
+	data = {'startdate':startdatelist,'enddate':enddatelist,'vendor':vendorlist,'rank':ranklist,'volume':volumelist,'soq':soqtotallist,'buyguide percentage':splitpercentagelist}
 	df = pd.DataFrame(data)
 	totaldict = {}
 	for index, row in df.iterrows():
@@ -209,7 +214,7 @@ for key,value in buyguide_dict.items():
 
 
 	timedomain =[]
-	for i in range(1,15):
+	for i in range(1,22):
 		date = opdtimestamp + datetime.timedelta(days=i).total_seconds()
 		print(date)
 		date_1 = pd.Timestamp(date, unit='s')
@@ -219,6 +224,8 @@ for key,value in buyguide_dict.items():
 	sslist =[]
 	schedrcptslist =[]
 	soq1_list = []
+
+	vendor_soq_dict = {}
 
 	filtered_orderskudata = orderskudata[(orderskudata['item']==str(item))&(orderskudata['dest']==str(dest))]
 	for item in timedomain:
@@ -256,16 +263,66 @@ for key,value in buyguide_dict.items():
 			list_2 = item_1_string.split(" ")
 			print(list_2[0])
 			print(arrivdate)
-			
+			source_1 = row['source']
 			print(row['soq'])
 			if(arrivdate == list_2[0]):
 				soq_1 = soq_1 + row['soq']
+				arrivedate_dict = {}
+				try:
+					arrivedate_dict = vendor_soq_dict[source_1]
+				except KeyError:
+					arrivedate_dict = {}
+					vendor_soq_dict[source_1] = arrivedate_dict
+				arrivedate_dict[arrivdate] = row['soq']
+
+
 		soq1_list.append(soq_1)
 
-
-
 	data_1 = {'date':timedomain,'demand':demandlist,'ss':sslist,'schedrcpt':schedrcptslist,'soq':soq1_list}
+	print(vendor_soq_dict)
+	for key_1,value in vendor_soq_dict.items():
+		print("source : "+key_1)
+		vendor_soq_list=[]
+		for item in timedomain:
+			print(type(item))
+			item_3_string = str(item)
+			list_3 = item_3_string.split(" ")
+			item_string = list_3[0]
+			print(item_string)
+			try:
+				soq_5 = value[item_string]
+				vendor_soq_list.append(soq_5)
+			except KeyError:
+				vendor_soq_list.append(0)
+		data_1[key_1] = vendor_soq_list
+
+
+
+	print(data_1)
+
+
+	
 	df_1 = pd.DataFrame(data_1)
+	curr_projoh =0
+	projoh_list =[]
+	projavail_list =[]
+	ignored_demand_list =[]
+	for index, row in df_1.iterrows():
+		curr_projoh=curr_projoh+row['schedrcpt']+row['soq']-row['demand']
+		ignored_demand = 0
+		if(curr_projoh < 0):
+			ignored_demand = curr_projoh * -1
+			curr_projoh = 0
+		projoh_list.append(curr_projoh)
+		projavail_list.append(curr_projoh-row['ss'])
+		ignored_demand_list.append(ignored_demand)
+
+	print(projoh_list)
+	df_1['projoh'] = projoh_list
+	df_1['projavail'] = projavail_list
+	df_1['ignored_demand'] = ignored_demand_list
+
+	print(df_1)
 	print(demandlist)
 	print(sslist)
 	print(schedrcptslist)
@@ -278,5 +335,65 @@ for key,value in buyguide_dict.items():
 	text_file.write('\n')
 	text_file.write(df_1.to_string())
 
+	curr_startdate = None
+	curr_enddate = None
+	total_volume = 0
+	total_soq = 0
+	startdatelist_1 = []
+	enddatelist_1 = []
+	total_volume_list = []
+	total_soq_list = []
+	for index, row in df.iterrows():
+		print()
+		if(curr_startdate == row['startdate']):
+			total_volume = total_volume +row['volume']
+			total_soq = total_soq + row['soq']
+		else:
+			if(curr_startdate != None):
+				startdatelist_1.append(curr_startdate)
+				enddatelist_1.append(curr_enddate)
+				total_volume_list.append(total_volume)
+				total_soq_list.append(total_soq)
+			total_volume = row['volume']
+			total_soq = row['soq']
+		curr_startdate = row['startdate']
+		curr_enddate = row['enddate']
+	startdatelist_1.append(curr_startdate)
+	enddatelist_1.append(curr_enddate)
+	total_volume_list.append(total_volume)
+	total_soq_list.append(total_soq)
+
+	data_2 = {'startdate':startdatelist_1,'enddate':enddatelist_1,'volume':total_volume_list,'ordered_total':total_soq_list}
+	df_2 = pd.DataFrame(data_2)
+
+	aop_and_ss_list =[]
+	net_ss_list =[]
+	for index, row in df_2.iterrows():
+		startdate = row['startdate']
+		enddate = row['enddate']
+		total_demand = 0
+		end_ss = 0
+		for i,r in df_1.iterrows():
+			date =  r['date']
+			demand = r['demand']
+			print(type(date))
+			print(type(startdate))
+			timestamp = pd.Timestamp(date).tz_localize(tz='US/Eastern')
+			if(startdate <=timestamp <=enddate):
+				total_demand = total_demand + demand
+			if(date == enddate):
+				end_ss = r['ss']
+		aop_and_ss = total_demand + end_ss
+		aop_and_ss_list.append(aop_and_ss)
+		net_ss_list.append(end_ss)
+
+
+	df_2['aop_and_ss'] = aop_and_ss_list
+	df_2['net_ss'] = net_ss_list
+
+	text_file.write('\n')
+	text_file.write(df_2.to_string())
+
 	print(df)
+	print(df_2)
 text_file.close()
