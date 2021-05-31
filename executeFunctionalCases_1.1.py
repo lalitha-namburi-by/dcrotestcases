@@ -372,3 +372,8 @@ for testCaseString in testCasesStringList:
  
 generateHTMLReport(report_name,bacthrun_results_path,files_with_differences_dict,executed_cases_list,error_cases_list)
 
+#Also give execute permission to createSummaryForAll.py on your localc machine
+#Uncomment these lines to generate summary.
+#script_command = "./createSummaryForAll.py"
+#os.system(script_command)
+
