@@ -1,0 +1,52 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2006-11-03",
+    "inputFolderName": "OOPT-MSO418.02",
+    "groupOrderId": "41802",
+     "orderGroup": "4177081599",
+    "orderGroupMembers": 
+	[
+        {
+           
+            "orderGroupMember": "OOPT-MSO418.02-OGM2",
+                "orderId": "41802-2",
+                      "items": 
+			[
+                {  "itemId": "3807694298",
+                    "sourceId": "2074407411",
+                    "destinationId": "4177070904",
+                    "suggestedSoq": 55,
+                    "modifiedSoq": 22
+                  
+                },{  "itemId": "3807694299",
+                    "sourceId": "2074407411",
+                    "destinationId": "4177070904",
+                    "suggestedSoq": 55,
+                    "modifiedSoq": 15
+                  
+                }
+                
+            ]
+
+        },
+        {
+
+        
+             "orderGroupMember": "OOPT-MSO418.02-OGM1",
+                "orderId": "41802-1",
+                      "items": 
+			[
+                {  "itemId": "3807694295",
+                    "sourceId": "2074407411",
+                    "destinationId": "4177070904",
+                    "suggestedSoq": 55,
+                    "modifiedSoq": 10
+                  
+                }
+                
+            ]
+        }
+		
+    ]
+}

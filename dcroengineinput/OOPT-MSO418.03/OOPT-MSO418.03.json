@@ -1,0 +1,27 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2006-11-02",
+    "inputFolderName": "OOPT-MSO418.03",
+    "groupOrderId": "41803",
+     "orderGroup": "4178005120",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "OOPT-MSO418.03-OGM1",
+                "orderId": "41803-1",
+                      "items": 
+			[
+                {  "itemId": "3807695257",
+                    "sourceId": "2074437202",
+                    "destinationId": "4177994425",
+                    "suggestedSoq": 55,
+                    "modifiedSoq": 10
+                  
+                }
+                
+            ]
+        }
+		
+    ]
+}
