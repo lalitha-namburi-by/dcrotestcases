@@ -118,18 +118,18 @@ for index, row in orderskudata.iterrows():
 
 #print(sku_soq_dict)
 
-startdatelist = []
-enddatelist = []
 
-soqtotallist =[]
-splitpercentagelist =[]
-vendorlist = []
-ranklist = []
-volumelist =[]
 filepath = output_dir+'summary.txt'
 text_file = open(filepath, 'w')
 for key,value in buyguide_dict.items():
 	#print(key)
+	startdatelist = []
+	enddatelist = []
+	soqtotallist =[]
+	splitpercentagelist =[]
+	vendorlist = []
+	ranklist = []
+	volumelist =[]
 	for key1, value1 in value.items():
 		#print(key1)
 		
@@ -243,7 +243,7 @@ for key,value in buyguide_dict.items():
 			period_from = row['AGGREGATED_ORDER_PROJECTION_PERIOD_FROM']
 			period_upto = row['AGGREGATED_ORDER_PROJECTION_PERIOD_UPTO']
 			if((item_1 <= period_upto) &  (item_1 >=period_from)):
-				demand= demand+	row['AGGREGATED_ORDER_PROJECTION_MEAN']
+				demand= demand+ row['AGGREGATED_ORDER_PROJECTION_MEAN']
 		demandlist.append(demand)
 
 		ss = 0;
@@ -251,14 +251,14 @@ for key,value in buyguide_dict.items():
 			period_from = row['EFFECTIVE_FROM']
 			period_upto = row['EFFECTIVE_UPTO']
 			if((item_1 <= period_upto) &  (item_1 >=period_from)):
-				ss= ss+	row['SAFETY_STOCK_PER_DAY']
+				ss= ss+ row['SAFETY_STOCK_PER_DAY']
 		sslist.append(ss)
 
 		schedrcpt = 0;
 		for index,row in filtered_schedrcpt.iterrows():
 			delivery_date = row['H_EDLC_EXPECTED_DELIVERY_DATE']
 			if(item_1 == delivery_date):
-				schedrcpt= schedrcpt+	row['H_EDLC_QUANTITY']
+				schedrcpt= schedrcpt+   row['H_EDLC_QUANTITY']
 		schedrcptslist.append(schedrcpt)
 
 		soq_1 = 0;
