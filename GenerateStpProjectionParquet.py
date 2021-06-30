@@ -65,7 +65,7 @@ def generateStpParquetsForTestCases():
     service_endpoint_url = 'http://localhost:8080/test_dcro_engine_service/trigger'
     testCasesStringList = []
     current_dir = os.getcwd()
-    batch_cases_file_path = current_dir + "/batchcases"
+    batch_cases_file_path = current_dir + "/batchcasesForStpParquetGenerateForLTP"
     total_cases = file_len(batch_cases_file_path)
     print("Total cases =", total_cases)
     test_case_inputdir = current_dir + "/dcroengineinput"
