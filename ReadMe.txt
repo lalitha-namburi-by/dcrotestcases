@@ -39,6 +39,9 @@ After this install numpy in your terminal type
 After this install pandas, (with an ‘s’), in your terminal type
 	Pip install pandas
 
+After this install
+    pip install pyspark
+
 
 
 open application.properties in your code. Set the following properties in that
