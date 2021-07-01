@@ -57,7 +57,7 @@ def generateStpParquetFromParquet(inputDir, outputDir, orderplacedate, stpenddat
                           f"lpoh1.ordergroup = lpoh2.og AND lpoh1.orderplacedate = lpoh2.opd AND lpoh1.createdate = "
                           f"lpoh2.cd) oh WHERE os.grouporderid = oh.orderid AND os.ordergroup = oh.ordergroup;")
 
-    df.repartition(1).write.parquet(inputDir + '/latest-short-term-order-projections.parquet', "overwrite", compression='snappy')
+    df.repartition(1).write.parquet(inputDir + '/latest_short_term_order_projections.parquet', "overwrite", compression='snappy')
 
 
 #This Function executes a testcase by triggering the service
@@ -389,8 +389,8 @@ for testCaseString in testCasesStringList:
     begindate = datetime.strptime(orderPlaceDate, "%Y-%m-%d")
     stpEndDate = begindate + timedelta(days=14)
     result1 = executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url,"false")
-    generateStpParquetFromParquet((input_dir+"/"+testCaseName), (output_dir+"/"+testCaseName), orderPlaceDate,
-                                  stpEndDate)
+    #generateStpParquetFromParquet((input_dir+"/"+testCaseName), (output_dir+"/"+testCaseName), orderPlaceDate,
+                                  #stpEndDate)
     result2 = executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url,"true")
     executed_cases = executed_cases + 1
     executed_cases_list.append(testCaseName)
