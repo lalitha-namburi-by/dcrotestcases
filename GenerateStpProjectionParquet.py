@@ -28,7 +28,7 @@ def GenerateStpParquetFromDbData(outputDir, orderplacedate, stpenddate):
             conn)
         print("data frame = ", df)
         print("outputdir = ", outputDir)
-        df.to_parquet(outputDir + '/latest-short-term-order-projections.parquet', compression='snappy')
+        df.to_parquet(outputDir + '/latest_short_term_order_projections.parquet', compression='snappy')
 
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)

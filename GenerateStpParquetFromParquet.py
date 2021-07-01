@@ -35,7 +35,7 @@ def generateStpParquetFromParquet(inputDir, outputDir, orderplacedate, stpenddat
                           f"lpoh1.ordergroup = lpoh2.og AND lpoh1.orderplacedate = lpoh2.opd AND lpoh1.createdate = "
                           f"lpoh2.cd) oh WHERE os.grouporderid = oh.orderid AND os.ordergroup = oh.ordergroup;")
 
-    df.repartition(1).write.parquet(inputDir + '/latest-short-term-order-projections.parquet', "overwrite", compression='snappy')
+    df.repartition(1).write.parquet(inputDir + '/latest_short_term_order_projections.parquet', "overwrite", compression='snappy')
 
 
 def generateStpParquetsForTestCases():
