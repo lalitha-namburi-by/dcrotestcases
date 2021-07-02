@@ -8,6 +8,9 @@ import datetime
 import time
 
 from pyspark.python.pyspark.shell import spark
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+from pyspark.sql.types import TimestampType, LongType
 from requests.exceptions import ConnectionError
 from datetime import datetime
 from datetime import timedelta
@@ -35,29 +38,43 @@ def createDirectory( dirName):
     return;
 
 def generateStpParquetFromParquet(inputDir, outputDir, orderplacedate, stpenddate):
+    spark = SparkSession \
+        .builder \
+        .config("spark.driver.host", "127.0.0.1") \
+        .config("spark.driver.bindAddress", "127.0.0.1") \
+        .appName("dcrotestcases") \
+        .getOrCreate()
+    spark.conf.set("spark.sql.session.timeZone", "UTC")
+
     orderheader_parquet = spark.read.parquet(outputDir + "/lrr_proj_orderheader.parquet")
     ordersku_parquet = spark.read.parquet(outputDir + "/lrr_proj_ordersku.parquet")
 
     orderheader_parquet.createOrReplaceTempView("orderheader_parquet")
     ordersku_parquet.createOrReplaceTempView("ordersku_parquet")
 
-    df = spark.sql(f"SELECT os.item AS itemid,os.dest AS destination,os.soq AS soq,os.arrivdate AS arrivedate,"
-                          f"os.ordergroup AS ordergroup,os.orderpointdate as orderpointdate,os.orderpointprojoh as "
-                          f"orderpointprohoh,os.orderpointssqty as orderpointssqty,os.source as source,"
-                          f"oh.orderplacedate AS orderplacedate FROM ordersku_parquet os, ( SELECT * FROM ( SELECT "
-                          f"ordergroup,orderid,orderplacedate,createdate FROM orderheader_parquet WHERE orderid = "
-                          f"grouporderid) lpoh1 INNER JOIN ( SELECT lpohA.og AS og,lpohA.cd AS cd,max(lpohA.opd) AS "
-                          f"opd FROM ( SELECT ordergroup AS og, orderplacedate AS opd, createdate AS cd FROM "
-                          f"orderheader_parquet WHERE orderid = grouporderid AND projectiontype = 1 AND DATE("
-                          f"orderplacedate) > '{orderplacedate}' AND DATE(orderplacedate) < '{stpenddate}') lpohA "
-                          f"INNER JOIN ( SELECT ordergroup AS og, max(createdate) AS cd FROM orderheader_parquet "
-                          f"WHERE orderid = grouporderid AND projectiontype = 1 AND DATE(orderplacedate) > '"
-                          f"{orderplacedate}' AND DATE(orderplacedate) < '{stpenddate}' GROUP BY ordergroup) lpohB ON "
-                          f"lpohA.og = lpohB.og AND lpohA.cd = lpohB.cd GROUP BY lpohA.og, lpohA.cd) lpoh2 ON "
-                          f"lpoh1.ordergroup = lpoh2.og AND lpoh1.orderplacedate = lpoh2.opd AND lpoh1.createdate = "
-                          f"lpoh2.cd) oh WHERE os.grouporderid = oh.orderid AND os.ordergroup = oh.ordergroup;")
+    df = spark.sql(f"SELECT os.item AS item,os.dest AS dest,os.soq AS soq,os.arrivdate AS arrivdate,"
+                   f"os.ordergroup AS ordergroup,os.orderpointdate as orderpointdate,os.orderpointprojoh as "
+                   f"orderpointprojoh,os.orderpointssqty as orderpointssqty,os.source as source,"
+                   f"oh.orderplacedate AS orderplacedate FROM ordersku_parquet os, ( SELECT * FROM ( SELECT "
+                   f"ordergroup,orderid,orderplacedate,createdate FROM orderheader_parquet WHERE orderid = "
+                   f"grouporderid) lpoh1 INNER JOIN ( SELECT lpohA.og AS og,lpohA.cd AS cd,max(lpohA.opd) AS "
+                   f"opd FROM ( SELECT ordergroup AS og, orderplacedate AS opd, createdate AS cd FROM "
+                   f"orderheader_parquet WHERE orderid = grouporderid AND projectiontype = 1 AND DATE("
+                   f"orderplacedate) > '{orderplacedate}' AND DATE(orderplacedate) < '{stpenddate}') lpohA "
+                   f"INNER JOIN ( SELECT ordergroup AS og, max(createdate) AS cd FROM orderheader_parquet "
+                   f"WHERE orderid = grouporderid AND projectiontype = 1 AND DATE(orderplacedate) > '"
+                   f"{orderplacedate}' AND DATE(orderplacedate) < '{stpenddate}' GROUP BY ordergroup) lpohB ON "
+                   f"lpohA.og = lpohB.og AND lpohA.cd = lpohB.cd GROUP BY lpohA.og, lpohA.cd) lpoh2 ON "
+                   f"lpoh1.ordergroup = lpoh2.og AND lpoh1.orderplacedate = lpoh2.opd AND lpoh1.createdate = "
+                   f"lpoh2.cd) oh WHERE os.grouporderid = oh.orderid AND os.ordergroup = oh.ordergroup;")
 
-    df.repartition(1).write.parquet(inputDir + '/latest_short_term_order_projections.parquet', "overwrite", compression='snappy')
+    df = df.withColumn("arrivdate", col("arrivdate").cast(TimestampType()).cast(LongType()) * 1000)
+    df = df.withColumn("orderplacedate", col("orderplacedate").cast(TimestampType()).cast(LongType()) * 1000)
+    df = df.withColumn("orderpointdate", col("orderpointdate").cast(TimestampType()).cast(LongType()) * 1000)
+
+    df.show()
+    df.repartition(1).write.parquet(inputDir + '/latest_short_term_order_projections.parquet', "overwrite",
+                                    compression='snappy')
 
 
 #This Function executes a testcase by triggering the service
