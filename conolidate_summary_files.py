@@ -16,7 +16,8 @@ for testCaseString in testCasesStringList:
     testCaseData = testCaseString.split(":")
     testCaseName = testCaseData[0]
     filepath = current_dir + "/dcroengineoutput/" + testCaseName +"/summary.txt"
-    read_files.append(filepath)
+    if(os.path.exists(filepath)):
+        read_files.append(filepath)
 
 
 #read_files = glob.glob("/dcroengineoutput/*/summary.txt")
