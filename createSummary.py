@@ -13,6 +13,20 @@ def write_parquet_to_textfile(filepath,data):
 	text_file.write(data.to_string())
 	text_file.close()
 
+def tz_aware(dt):
+    return dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None
+
+def convert_timestamp(dt):
+
+    if tz_aware(dt):
+        print("tz aware")
+        timestamp = dt.tz_convert(tz='US/Eastern')
+    else:
+        print("tz localize")
+        timestamp = dt.tz_localize(tz='US/Eastern')
+
+    return timestamp
+
 class SOQ:
 
 	def __init__(self,opd,soq):
@@ -23,16 +37,17 @@ class SOQ:
 current_dir = os.getcwd()
 
 testcase = sys.argv[1]
+print(testcase)
 unformattedorderplacedate = sys.argv[2]
 orderplacedate = unformattedorderplacedate.replace("-", "/")
 
 element = datetime.datetime.strptime(orderplacedate,"%Y/%m/%d")
 
-print(element)
+#print(element)
   
 opdtimestamp = datetime.datetime.timestamp(element)
 
-print(opdtimestamp)
+#print(opdtimestamp)
 
 buy_guide_parquet = current_dir+'/dcroengineinput/'+testcase+'/buy_guide_data.parquet'
 buyGuideParquet = pd.read_parquet(buy_guide_parquet)
@@ -59,10 +74,15 @@ for index,row in buyGuideParquet.iterrows():
 		sku_dict[vendor] = datalist
 	datalist.append(row)
 	
-#print(json.dumps(buyguide_dict, indent=4, sort_keys=True))
+print(buyguide_dict)
 output_dir = current_dir+'/dcroengineoutput/'+testcase+'/'
 orderheaderfilelist = [output_dir+'OrderHeader.parquet',output_dir+'lrr_proj_orderheader.parquet',output_dir+'LongTermProjections/lrr_proj_orderheader.parquet']
-orderheader_df_list = [pd.read_parquet(file) for file in orderheaderfilelist]
+existingorderheaderfilelist = []
+for orderheaderfile in orderheaderfilelist:
+	if(os.path.exists(orderheaderfile)):
+		existingorderheaderfilelist.append(orderheaderfile)
+
+orderheader_df_list = [pd.read_parquet(file) for file in existingorderheaderfilelist]
 
 orderheaderdata = pd.concat(orderheader_df_list)
 #print(orderheaderdata)
@@ -80,7 +100,11 @@ for index,row in orderheaderdata.iterrows():
 #ordersku_parquet = '/Users/1022177/dcrotestcases/dcroengineoutput/50101/OrderSku.parquet'
 orderskufilelist = [output_dir+'OrderSku.parquet',output_dir+'lrr_proj_ordersku.parquet',output_dir+'LongTermProjections/lrr_proj_ordersku.parquet']
 
-ordersku_df_list = [pd.read_parquet(file) for file in orderskufilelist]
+existingorderskufilelist = []
+for orderskufile in orderskufilelist:
+	if(os.path.exists(orderskufile)):
+		existingorderskufilelist.append(orderskufile)
+ordersku_df_list = [pd.read_parquet(file) for file in existingorderskufilelist]
 orderskudata = pd.concat(ordersku_df_list)
 
 #orderskudata = pd.read_parquet(ordersku_parquet)
@@ -122,7 +146,7 @@ for index, row in orderskudata.iterrows():
 filepath = output_dir+'summary.txt'
 text_file = open(filepath, 'w')
 for key,value in buyguide_dict.items():
-	#print(key)
+	print(key)
 	startdatelist = []
 	enddatelist = []
 	soqtotallist =[]
@@ -153,12 +177,19 @@ for key,value in buyguide_dict.items():
 				#print(type(element))
 				#timestamp = datetime.datetime.timestamp(element)
 				#timestamp = time.mktime(datetime.datetime.strptime(orderplacedate, "%Y-%m-%d %H:%M:%S").timetuple())
-				timestamp = pd.Timestamp(orderplacedate_3).tz_localize(tz='US/Eastern')
+				#timestamp = pd.Timestamp(orderplacedate_3).tz_localize(tz='US/Eastern')
+				timestamp = convert_timestamp(pd.Timestamp(orderplacedate_3))
 				#print(type(timestamp))
 				#print(timestamp)
+				#starttimestamp = startdate.tz_localize(tz='US/Eastern')
+				#endtimestamp = enddate.tz_localize(tz='US/Eastern')
+				
+				starttimestamp = convert_timestamp(startdate)
+				endtimestamp = convert_timestamp(enddate)
 			
-				if startdate <= timestamp < enddate:
-				   soqtotal = soqtotal + soqObject.soq
+				if starttimestamp <= timestamp < endtimestamp:
+					print("in here")
+					soqtotal = soqtotal + soqObject.soq
 			#print(soqtotal)
 			rank = row['PRIORITY']
 			volume = row['VOLUME']
@@ -169,9 +200,10 @@ for key,value in buyguide_dict.items():
 			soqtotallist.append(soqtotal)
 			splitpercentagelist.append(split_percentage)
 			vendorlist.append(key1)
-
+	print(soqtotallist)
 	data = {'startdate':startdatelist,'enddate':enddatelist,'vendor':vendorlist,'rank':ranklist,'volume':volumelist,'soq':soqtotallist,'buyguide percentage':splitpercentagelist}
 	df = pd.DataFrame(data)
+	print(df)
 	totaldict = {}
 	for index, row in df.iterrows():
 		startdate = row['startdate']
@@ -187,7 +219,9 @@ for key,value in buyguide_dict.items():
 		startdate = row['startdate']
 		soq = row['soq']
 		total = totaldict[startdate]
-		percentage = (soq/total)*100
+		percentage = 0
+		if (total > 0):
+			percentage = (soq/total)*100
 		actual_percentage.append(percentage)
 
 	df['actual_percentage'] = actual_percentage
@@ -214,7 +248,10 @@ for key,value in buyguide_dict.items():
 
 	schedrcpt_parquet = current_dir+'/dcroengineinput/'+testcase+'/schedrcpts.parquet'
 	schedrcptdata = pd.read_parquet(schedrcpt_parquet)
-	filtered_schedrcpt = schedrcptdata[(schedrcptdata['H_EDLC_L_ID_TARGET']==dest_code)&(schedrcptdata['H_EDLC_P_ID']==item_code)]
+	print(schedrcptdata)
+	print("masterdata location : "+dest_code)
+	print(dest)
+	filtered_schedrcpt = schedrcptdata[(schedrcptdata['H_EDLC_L_ID_TARGET']==dest)&(schedrcptdata['H_EDLC_P_ID']==item)]
 	#print(filtered_schedrcpt)
 
 
@@ -224,8 +261,8 @@ for key,value in buyguide_dict.items():
 		date = element + datetime.timedelta(days=i)
 		#print(date)
 		date_1 = pd.Timestamp(date, unit='s')
-		item_1 = date_1.tz_localize('US/Eastern')
-		print(item_1)
+		item_1 = convert_timestamp(date_1)
+		#print(item_1)
 		timedomain.append(item_1)
 	#print(timedomain)
 	demandlist = []
@@ -242,7 +279,11 @@ for key,value in buyguide_dict.items():
 		for index,row in filtered_demand.iterrows():
 			period_from = row['AGGREGATED_ORDER_PROJECTION_PERIOD_FROM']
 			period_upto = row['AGGREGATED_ORDER_PROJECTION_PERIOD_UPTO']
-			if((item_1 <= period_upto) &  (item_1 >=period_from)):
+			#period_from_stamp = period_from.tz_localize('US/Eastern')
+			#period_upto_stamp = period_upto.tz_localize('US/Eastern')
+			period_from_stamp = convert_timestamp(period_from)
+			period_upto_stamp = convert_timestamp(period_upto)
+			if((item_1 <= period_upto_stamp) &  (item_1 >=period_from_stamp)):
 				demand= demand+ row['AGGREGATED_ORDER_PROJECTION_MEAN']
 		demandlist.append(demand)
 
@@ -250,14 +291,24 @@ for key,value in buyguide_dict.items():
 		for index,row in filtered_ss.iterrows():
 			period_from = row['EFFECTIVE_FROM']
 			period_upto = row['EFFECTIVE_UPTO']
-			if((item_1 <= period_upto) &  (item_1 >=period_from)):
+			#period_from_stamp = period_from.tz_localize('US/Eastern')
+			#period_upto_stamp = period_upto.tz_localize('US/Eastern')
+			period_from_stamp = convert_timestamp(period_from)
+			period_upto_stamp = convert_timestamp(period_upto)
+			
+			if((item_1 <= period_upto_stamp) &  (item_1 >=period_from_stamp)):
 				ss= ss+ row['SAFETY_STOCK_PER_DAY']
 		sslist.append(ss)
 
 		schedrcpt = 0;
+		#print("date"+str(item_1))
 		for index,row in filtered_schedrcpt.iterrows():
 			delivery_date = row['H_EDLC_EXPECTED_DELIVERY_DATE']
-			if(item_1 == delivery_date):
+			deliyery_date_string = str(delivery_date)
+			delivery_date_list = deliyery_date_string.split(" ")
+			date_string = str(item_1)
+			date_string_list = date_string.split(" ")
+			if(date_string_list[0] == delivery_date_list[0]):
 				schedrcpt= schedrcpt+   row['H_EDLC_QUANTITY']
 		schedrcptslist.append(schedrcpt)
 
@@ -376,6 +427,7 @@ for key,value in buyguide_dict.items():
 
 	aop_and_ss_list =[]
 	net_ss_list =[]
+	prev_net_ss = 0
 	for index, row in df_2.iterrows():
 		startdate = row['startdate']
 		enddate = row['enddate']
@@ -387,13 +439,32 @@ for key,value in buyguide_dict.items():
 			#print(type(date))
 			#print(type(startdate))
 			#timestamp = pd.Timestamp(date).tz_localize(tz='US/Eastern')
-			if(startdate <=date <=enddate):
+			#starttimestamp = startdate.tz_localize(tz='US/Eastern')
+			#endtimestamp = enddate.tz_localize(tz='US/Eastern')
+			starttimestamp = convert_timestamp(startdate)
+			endtimestamp = convert_timestamp(enddate)
+			
+			if(starttimestamp <=date <endtimestamp):
 				total_demand = total_demand + demand
-			if(date == enddate):
-				end_ss = r['ss']
-		aop_and_ss = total_demand + end_ss
+			#print("date "+str(date))
+			#print("enddate "+str(enddate))
+			#string_date = str(date)
+			#string_enddate = str(enddate)
+			#string_date_list = string_date.split(" ")
+			#string_end_date_list = string_enddate.split(" ")
+			#if(string_date_list[0] == string_end_date_list[0]):
+			#	print(string_date_list[0])
+			#	print(string_end_date_list[0])
+			#	end_ss = r['ss']
+			if(date<enddate):
+				print(date)
+				print(enddate)
+				end_ss=r['ss']
+		net_ss = end_ss - prev_net_ss
+		prev_net_ss = end_ss
+		aop_and_ss = total_demand + net_ss
 		aop_and_ss_list.append(aop_and_ss)
-		net_ss_list.append(end_ss)
+		net_ss_list.append(net_ss)
 
 
 	df_2['aop_and_ss'] = aop_and_ss_list

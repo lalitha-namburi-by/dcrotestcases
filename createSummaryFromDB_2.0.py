@@ -26,6 +26,7 @@ def convert_timestamp(dt):
 
     return timestamp
 
+
 def write_parquet_to_textfile(filepath,data):
     text_file = open(filepath, 'w')
     text_file.write(data.to_string())
@@ -575,7 +576,7 @@ for key,value in buyguide_dict.items():
             endtimestamp = convert_timestamp(enddate)
             
             if(starttimestamp <=date <=endtimestamp):
-               total_demand = total_demand + demand
+                total_demand = total_demand + demand
             #if(startdate <=date <=enddate):
             #    total_demand = total_demand + demand
             #print("date "+str(date))
