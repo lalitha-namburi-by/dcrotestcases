@@ -19,10 +19,10 @@ def tz_aware(dt):
 def convert_timestamp(dt):
 
     if tz_aware(dt):
-        print("tz aware")
+        #print("tz aware")
         timestamp = dt.tz_convert(tz='US/Eastern')
     else:
-        print("tz localize")
+        #print("tz localize")
         timestamp = dt.tz_localize(tz='US/Eastern')
 
     return timestamp
@@ -74,7 +74,7 @@ for index,row in buyGuideParquet.iterrows():
 		sku_dict[vendor] = datalist
 	datalist.append(row)
 	
-print(buyguide_dict)
+#print(buyguide_dict)
 output_dir = current_dir+'/dcroengineoutput/'+testcase+'/'
 orderheaderfilelist = [output_dir+'OrderHeader.parquet',output_dir+'lrr_proj_orderheader.parquet',output_dir+'LongTermProjections/lrr_proj_orderheader.parquet']
 existingorderheaderfilelist = []
@@ -145,25 +145,72 @@ for index, row in orderskudata.iterrows():
 
 filepath = output_dir+'summary.txt'
 text_file = open(filepath, 'w')
+
+schedrcptsupplierdata = pd.DataFrame()
+manualordersdata = pd.DataFrame()
+
+schedrcpt_supplier_parquet = current_dir+'/dcroengineinput/'+testcase+'/schedrcpts_supplier_data.parquet'
+if(os.path.exists(schedrcpt_supplier_parquet)):
+	schedrcptsupplierdata = pd.read_parquet(schedrcpt_supplier_parquet)
+
+manual_orders_parquet = current_dir+'/dcroengineinput/'+testcase+'/manual_orders_data.parquet'
+if(os.path.exists(manual_orders_parquet)):
+	manualordersdata = pd.read_parquet(manual_orders_parquet)
+	#print(manualordersdata)
+
 for key,value in buyguide_dict.items():
 	print(key)
+	keydata = key.split('@')
+	item = int(keydata[0])
+	dest = int(keydata[1])
+	
 	startdatelist = []
 	enddatelist = []
 	soqtotallist =[]
+	srstotallist =[]
+	msototallist =[]
 	splitpercentagelist =[]
 	vendorlist = []
 	ranklist = []
 	volumelist =[]
 	for key1, value1 in value.items():
 		#print(key1)
+		filtered_schedrcpt_supplier = pd.DataFrame()
+		filtered_manual_orders = pd.DataFrame()
+		
+		source = int(key1)
+		if not schedrcptsupplierdata.empty:
+			#print(schedrcptsupplierdata)
+			filtered_schedrcpt_supplier = schedrcptsupplierdata[(schedrcptsupplierdata['H_EDLC_L_ID_TARGET']==dest)&(schedrcptsupplierdata['H_EDLC_P_ID']==item)&(schedrcptsupplierdata['H_EDLC_L_ID_SOURCE']==source)]
+            
+		if not manualordersdata.empty:
+			filtered_manual_orders = manualordersdata[(manualordersdata['PP_L_ID_TARGET']==dest)&(manualordersdata['PP_P_ID']==item)&(manualordersdata['PP_L_ID_SOURCE']==source)]
+			#print(filtered_manual_orders)
 		
 		for row in value1 :
 			#print(row)
 			startdate = row['START_DATE']
 			enddate =  row['END_DATE']
+			
+			starttimestamp = convert_timestamp(startdate)
+			endtimestamp = convert_timestamp(enddate)
 			#print(startdate)
 			#print(type(startdate))
-
+			srstotal =0
+			if not filtered_schedrcpt_supplier.empty:
+				for index1,row1 in filtered_schedrcpt_supplier.iterrows():
+					delivery_date = row1['H_EDLC_EXPECTED_DELIVERY_DATE']
+					delivery_timestamp = convert_timestamp(delivery_date)
+					if starttimestamp <= delivery_timestamp < endtimestamp:
+						srstotal = srstotal + row1['H_EDLC_QUANTITY']
+						
+			msototal =0
+			if not filtered_manual_orders.empty:
+				for index2,row2 in filtered_manual_orders.iterrows():
+					delivery_date = row2['DELIVERY_DATE']
+					delivery_timestamp = convert_timestamp(delivery_date)
+					if starttimestamp <= delivery_timestamp < endtimestamp:
+						msototal = msototal + row2['QUANTITY']
 			#print(enddate)
 			#print(type(enddate))
 			vendordata = sku_soq_dict[key]
@@ -183,41 +230,40 @@ for key,value in buyguide_dict.items():
 				#print(timestamp)
 				#starttimestamp = startdate.tz_localize(tz='US/Eastern')
 				#endtimestamp = enddate.tz_localize(tz='US/Eastern')
-				
-				starttimestamp = convert_timestamp(startdate)
-				endtimestamp = convert_timestamp(enddate)
 			
 				if starttimestamp <= timestamp < endtimestamp:
-					print("in here")
+					#print("in here")
 					soqtotal = soqtotal + soqObject.soq
 			#print(soqtotal)
 			rank = row['PRIORITY']
-			volume = row['VOLUME']
+			volume = row['VOLUME_EXACT']
 			ranklist.append(rank)
 			volumelist.append(volume)
 			startdatelist.append(startdate)
 			enddatelist.append(enddate)
 			soqtotallist.append(soqtotal)
+			srstotallist.append(srstotal)
+			msototallist.append(msototal)
 			splitpercentagelist.append(split_percentage)
 			vendorlist.append(key1)
-	print(soqtotallist)
-	data = {'startdate':startdatelist,'enddate':enddatelist,'vendor':vendorlist,'rank':ranklist,'volume':volumelist,'soq':soqtotallist,'buyguide percentage':splitpercentagelist}
+	#print(soqtotallist)
+	data = {'startdate':startdatelist,'enddate':enddatelist,'vendor':vendorlist,'rank':ranklist,'volume':volumelist,'soq':soqtotallist,'srs':srstotallist,'mso':msototallist,'buyguide percentage':splitpercentagelist}
 	df = pd.DataFrame(data)
-	print(df)
+	#print(df)
 	totaldict = {}
 	for index, row in df.iterrows():
 		startdate = row['startdate']
 		try:
 			totalvalue = totaldict[startdate]
-			totalvalue = totalvalue + row['soq']
+			totalvalue = totalvalue + row['soq'] + row['srs'] + row['mso']
 			totaldict[startdate] = totalvalue
 		except KeyError:
-			totaldict[startdate]= row['soq']
+			totaldict[startdate]= row['soq'] + row['srs']+ row['mso']
 
 	actual_percentage = []
 	for index, row in df.iterrows():
 		startdate = row['startdate']
-		soq = row['soq']
+		soq = row['soq'] + row['srs']+ row['mso']
 		total = totaldict[startdate]
 		percentage = 0
 		if (total > 0):
@@ -225,9 +271,6 @@ for key,value in buyguide_dict.items():
 		actual_percentage.append(percentage)
 
 	df['actual_percentage'] = actual_percentage
-	keydata = key.split('@')
-	item = int(keydata[0])
-	dest = int(keydata[1])
 	master_parquet = current_dir+'/dcroengineinput/'+testcase+'/masterdata.parquet'
 	masterdata = pd.read_parquet(master_parquet)
 	filtered_masterdata = masterdata[(masterdata['PP_P_ID'] ==item)&(masterdata['PP_L_ID_TARGET'] == dest)]
@@ -252,6 +295,9 @@ for key,value in buyguide_dict.items():
 	print("masterdata location : "+dest_code)
 	print(dest)
 	filtered_schedrcpt = schedrcptdata[(schedrcptdata['H_EDLC_L_ID_TARGET']==dest)&(schedrcptdata['H_EDLC_P_ID']==item)]
+	filtered_manual_orders = pd.DataFrame()
+	if not manualordersdata.empty:
+		filtered_manual_orders = manualordersdata[(manualordersdata['PP_L_ID_TARGET']==dest)&(manualordersdata['PP_P_ID']==item)]
 	#print(filtered_schedrcpt)
 
 
@@ -268,6 +314,7 @@ for key,value in buyguide_dict.items():
 	demandlist = []
 	sslist =[]
 	schedrcptslist =[]
+	msorderlist =[]
 	soq1_list = []
 
 	vendor_soq_dict = {}
@@ -311,7 +358,18 @@ for key,value in buyguide_dict.items():
 			if(date_string_list[0] == delivery_date_list[0]):
 				schedrcpt= schedrcpt+   row['H_EDLC_QUANTITY']
 		schedrcptslist.append(schedrcpt)
-
+		
+		msorder = 0;
+		for index,row in filtered_manual_orders.iterrows():
+			delivery_date = row['DELIVERY_DATE']
+			deliyery_date_string = str(delivery_date)
+			delivery_date_list = deliyery_date_string.split(" ")
+			date_string = str(item_1)
+			date_string_list = date_string.split(" ")
+			if(date_string_list[0] == delivery_date_list[0]):
+				msorder= msorder+ row['QUANTITY']
+		msorderlist.append(msorder)
+		
 		soq_1 = 0;
 		for index,row in filtered_orderskudata.iterrows():
 			arrivdatestring = row['arrivdate']
@@ -337,7 +395,7 @@ for key,value in buyguide_dict.items():
 
 		soq1_list.append(soq_1)
 
-	data_1 = {'date':timedomain,'demand':demandlist,'ss':sslist,'schedrcpt':schedrcptslist,'soq':soq1_list}
+	data_1 = {'date':timedomain,'demand':demandlist,'ss':sslist,'schedrcpt':schedrcptslist,'mso':msorderlist,'soq':soq1_list}
 	#print(vendor_soq_dict)
 	for key_1,value in vendor_soq_dict.items():
 		#print("source : "+key_1)
@@ -367,7 +425,7 @@ for key,value in buyguide_dict.items():
 	projavail_list =[]
 	ignored_demand_list =[]
 	for index, row in df_1.iterrows():
-		curr_projoh=curr_projoh+row['schedrcpt']+row['soq']-row['demand']
+		curr_projoh=curr_projoh+row['schedrcpt']+row['mso']+row['soq']-row['demand']
 		ignored_demand = 0
 		if(curr_projoh < 0):
 			ignored_demand = curr_projoh * -1
@@ -398,31 +456,37 @@ for key,value in buyguide_dict.items():
 	curr_enddate = None
 	total_volume = 0
 	total_soq = 0
+	total_incoming = 0
 	startdatelist_1 = []
 	enddatelist_1 = []
 	total_volume_list = []
 	total_soq_list = []
+	total_incoming_list = []
 	for index, row in df.iterrows():
 		#print()
 		if(curr_startdate == row['startdate']):
 			total_volume = total_volume +row['volume']
 			total_soq = total_soq + row['soq']
+			total_incoming = total_incoming + row['srs'] + row['mso']
 		else:
 			if(curr_startdate != None):
 				startdatelist_1.append(curr_startdate)
 				enddatelist_1.append(curr_enddate)
 				total_volume_list.append(total_volume)
 				total_soq_list.append(total_soq)
+				total_incoming_list.append(total_incoming)
 			total_volume = row['volume']
 			total_soq = row['soq']
+			total_incoming = row['srs'] + row['mso']
 		curr_startdate = row['startdate']
 		curr_enddate = row['enddate']
 	startdatelist_1.append(curr_startdate)
 	enddatelist_1.append(curr_enddate)
 	total_volume_list.append(total_volume)
 	total_soq_list.append(total_soq)
+	total_incoming_list.append(total_incoming)
 
-	data_2 = {'startdate':startdatelist_1,'enddate':enddatelist_1,'volume':total_volume_list,'ordered_total':total_soq_list}
+	data_2 = {'startdate':startdatelist_1,'enddate':enddatelist_1,'volume':total_volume_list,'ordered_total':total_soq_list,'srs_and_mso':total_incoming_list}
 	df_2 = pd.DataFrame(data_2)
 
 	aop_and_ss_list =[]
@@ -457,8 +521,8 @@ for key,value in buyguide_dict.items():
 			#	print(string_end_date_list[0])
 			#	end_ss = r['ss']
 			if(date<enddate):
-				print(date)
-				print(enddate)
+				#print(date)
+				#print(enddate)
 				end_ss=r['ss']
 		net_ss = end_ss - prev_net_ss
 		prev_net_ss = end_ss
@@ -472,6 +536,7 @@ for key,value in buyguide_dict.items():
 
 	text_file.write('\n')
 	text_file.write(df_2.to_string())
+	text_file.write('\n')
 
 	#print(df)
 	#print(df_2)
