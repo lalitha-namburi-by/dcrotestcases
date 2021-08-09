@@ -1,0 +1,26 @@
+Purpose:testing if additional vendor orders are considered as additional demand along with AOP
+
+Details:there are 4 AVO:
+	5001-qty=91 on 5-feb
+	5001-qty=121 on 6-feb
+	5002-qty=22 on 9-feb
+	5003-qty=57 on 3-feb
+	we also have SR=150 on 4-feb
+	daily demand=100
+	
+for 5003, we test for current orders
+5002- we test for projections
+5001- we test if any excess from prior order is considered in the next on
+
+important soq[arrival perspective]
+5001- supplier split
+4-0
+5-80+80
+6-120+80
+
+5002
+9-122
+
+5003
+3-157
+
