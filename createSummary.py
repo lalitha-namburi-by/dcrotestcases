@@ -283,10 +283,12 @@ for key,value in buyguide_dict.items():
 	demanddata = pd.read_parquet(demand_parquet)
 	filtered_demand = demanddata[(demanddata['SUPPLIER_EXTERNAL_CODE']==dest_code)&(demanddata['P_EXTERNAL_CODE']==item_code)]
 	#print(filtered_demand)
+	filtered_demand.drop_duplicates(subset=['AGGREGATED_ORDER_PROJECTION_PERIOD_FROM','AGGREGATED_ORDER_PROJECTION_PERIOD_UPTO'])
 
 	ss_parquet = current_dir+'/dcroengineinput/'+testcase+'/safetystock.parquet'
 	ssdata = pd.read_parquet(ss_parquet)
 	filtered_ss = ssdata[(ssdata['SUPPLIER_EXTERNAL_CODE']==dest_code)&(ssdata['P_EXTERNAL_CODE']==item_code)]
+	filtered_ss.drop_duplicates(subset=['EFFECTIVE_FROM','EFFECTIVE_UPTO'])
 	#print(filtered_ss)
 
 	schedrcpt_parquet = current_dir+'/dcroengineinput/'+testcase+'/schedrcpts.parquet'
@@ -295,10 +297,13 @@ for key,value in buyguide_dict.items():
 	print("masterdata location : "+dest_code)
 	print(dest)
 	filtered_schedrcpt = schedrcptdata[(schedrcptdata['H_EDLC_L_ID_TARGET']==dest)&(schedrcptdata['H_EDLC_P_ID']==item)]
+	filtered_schedrcpt.drop_duplicates(subset=['H_EDLC_EXPECTED_DELIVERY_DATE'])
+
 	filtered_manual_orders = pd.DataFrame()
 	if not manualordersdata.empty:
 		filtered_manual_orders = manualordersdata[(manualordersdata['PP_L_ID_TARGET']==dest)&(manualordersdata['PP_P_ID']==item)]
 	#print(filtered_schedrcpt)
+	filtered_manual_orders.drop_duplicates(subset=['DELIVERY_DATE'])
 
 
 	timedomain =[]
