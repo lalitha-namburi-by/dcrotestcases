@@ -1,0 +1,10 @@
+Purpose:Test if Allocation follow the percentage till UPTO is hit
+
+
+
+Details:Percentage use case such that UPTO constraint configured for only 1 vendor. All sources, ordering daily
+Till the UPTO constraint is hit for the vendor, exact ratio of Percentage to be maintained. Once hit, percentage to be normalized among the other vendors
+
+
+results :
+percentage being maintained

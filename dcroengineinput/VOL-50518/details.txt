@@ -1,0 +1,11 @@
+Purpose:Verify MAXCovDur & UPTO, verify when UPTO is less than the total need[for the vendor] is less than MaxCovdur and are not able to hit MaxCovDur 
+
+
+
+
+
+
+Details:maxcovdur=2d
+
+results :
+exception raised when we hit the condition

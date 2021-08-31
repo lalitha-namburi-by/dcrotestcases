@@ -1,0 +1,5 @@
+Purpose: Test if UPTO constraint not hit, allocations follow Percentage
+
+Details: Percentage use case with UPTO configured such that Total Demand in the buy guide is < total UPTO configured for all the sources. All sources, ordering daily
+
+UPTO constraint not to be hit, hence same results as if UPTO is not configured

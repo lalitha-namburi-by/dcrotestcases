@@ -1,0 +1,14 @@
+Purpose:Consider MSO in buy Guide calculation
+
+
+
+
+Details:"1 Source to have MSO in middle of the week, and MSO >UPTO- No orders from this source from D1
+1Source with MSO but MSO<UPTO, orders generated but we hit the UPTO limit
+1 source with MSO<UPTO, orders generated, and we don’t hit the UPTO constraints
+1 source, without MSO but with UPTO
+1 source without MSO/UPTO
+all orders to respect MSO & Percentage while calculating the order quantity"
+
+results :
+total SRS+SOQ should be close to the upto quantity.
