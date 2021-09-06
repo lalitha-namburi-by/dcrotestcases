@@ -1,0 +1,8 @@
+Purpose:Test if UPTO constraint is respected and exception generated
+
+
+Details:Percentage use case with UPTO configured such that Total Demand in the buy guide is > total UPTO configured for all the sources.All sources, ordering daily
+UPTO constraint is hit and we get the unmet demand exception
+
+results :
+SRS=40 considered and only SOQ=35 created for 6001

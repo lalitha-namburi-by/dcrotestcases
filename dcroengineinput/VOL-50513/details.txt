@@ -1,0 +1,9 @@
+Purpose:Test if no Percentage and only UPTO configured
+
+
+Details:Only UPTO configured for all the vendors. Daily ordering
+Fairshare
+
+
+results :
+Fairshare and all demands met

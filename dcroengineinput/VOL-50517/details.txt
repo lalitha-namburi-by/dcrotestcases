@@ -1,0 +1,10 @@
+Purpose:Verify even due to DRPCovDur UPTO constraint is not violated
+
+
+
+
+
+Details:DRPCovDur=4d
+
+results :
+DRPCovDur to be respected for Supplier split also

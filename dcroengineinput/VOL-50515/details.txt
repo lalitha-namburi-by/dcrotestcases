@@ -1,0 +1,12 @@
+Purpose:Ordering middle of the buy Guide, with SR/SRS configured. Daily Ordering
+
+
+
+
+Details:"1 source to have SR/SRS>UPTO- no orders
+1 source to have SR/SRS<UPTO, SRS to be considered while calculating the limit"
+
+OPD is 2-feb-2021
+
+results :
+total SRS+SOQ should be close to the upto quantity.

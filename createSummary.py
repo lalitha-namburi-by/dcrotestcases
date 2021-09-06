@@ -312,6 +312,7 @@ for key,value in buyguide_dict.items():
 	demanddata = pd.read_parquet(demand_parquet)
 	filtered_demand = demanddata[(demanddata['SUPPLIER_EXTERNAL_CODE']==dest_code)&(demanddata['P_EXTERNAL_CODE']==item_code)]
 	#print(filtered_demand)
+
 	filtered_demand = filtered_demand.drop_duplicates(subset=['AGGREGATED_ORDER_PROJECTION_PERIOD_FROM','AGGREGATED_ORDER_PROJECTION_PERIOD_UPTO'])
 
 	filtered_ss = pd.DataFrame()
@@ -332,11 +333,12 @@ for key,value in buyguide_dict.items():
 		filtered_schedrcpt = schedrcptdata[(schedrcptdata['H_EDLC_L_ID_TARGET']==dest)&(schedrcptdata['H_EDLC_P_ID']==item)]
 		filtered_schedrcpt = filtered_schedrcpt.drop_duplicates(subset=['H_EDLC_EXPECTED_DELIVERY_DATE'])
 
+
 	filtered_manual_orders = pd.DataFrame()
 	if not manualordersdata.empty:
 		filtered_manual_orders = manualordersdata[(manualordersdata['PP_L_ID_TARGET']==dest)&(manualordersdata['PP_P_ID']==item)]
-	#print(filtered_schedrcpt)
-	filtered_manual_orders = filtered_manual_orders.drop_duplicates(subset=['PP_L_ID_SOURCE','DELIVERY_DATE'])
+		#print(filtered_schedrcpt)
+		filtered_manual_orders = filtered_manual_orders.drop_duplicates(subset=['PP_L_ID_SOURCE','DELIVERY_DATE'])
 
 	filtered_additional_vendor_orders = pd.DataFrame()
 	if not additional_vendor_orders_data.empty:

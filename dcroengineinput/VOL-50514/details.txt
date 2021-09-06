@@ -1,0 +1,11 @@
+Purpose:Test Scenarios of single vendor with UPTO
+
+
+
+Details:Percentage use case, with UPTO configured for a single vendor. This Vendor to only order on days along
+
+
+results :
+All demand met by this vendor till UPTO limit, post that, the days demand to be met by the earlier order
+
+respect percentage for the vendors where upto not defined
