@@ -153,13 +153,14 @@ details_file_path = current_dir+'/dcroengineinput/'+testcase+'/details.txt'
 if(os.path.exists(details_file_path)):
 	with open(details_file_path, "r") as input:
 		for line in input:
-            text_file.write(line)
+			text_file.write(line)
 
 text_file.write('\n')
 text_file.write('\n')
 
 schedrcptsupplierdata = pd.DataFrame()
 manualordersdata = pd.DataFrame()
+additional_vendor_orders_data = pd.DataFrame()
 
 schedrcpt_supplier_parquet = current_dir+'/dcroengineinput/'+testcase+'/schedrcpts_supplier_data.parquet'
 if(os.path.exists(schedrcpt_supplier_parquet)):
@@ -497,7 +498,7 @@ for key,value in buyguide_dict.items():
 		projavail_list.append(curr_projoh-row['ss'])
 		ignored_demand_list.append(ignored_demand)
 		incoming_supply = row['mso']+row['soq']
-		incoming_supply_list.append() = incoming_supply
+		incoming_supply_list.append(incoming_supply)
 
 	#print(projoh_list)
 	df_1['projoh'] = projoh_list
