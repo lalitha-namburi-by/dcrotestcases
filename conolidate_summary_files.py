@@ -28,7 +28,7 @@ with open('result.txt', 'w') as outfile:
         with open(fname) as infile:
             outfile.write('\n')
             outfile.write('\n')
-            outfile.write(fname)
+ #           outfile.write(fname)
             outfile.write('\n')
             for line in infile:
                 outfile.write(line)
