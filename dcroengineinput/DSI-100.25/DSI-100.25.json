@@ -1,0 +1,33 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2021-02-01",
+    "inputFolderName": "DSI-100.25",
+    "groupOrderId": "DSI-100.25",
+    "orderGroup": "2001",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "SB-001",
+            "orderId": "DSI-100.25-SB-001",
+            "items": 
+			[
+                {  "itemId": "5001",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 500,
+                    "modifiedSoq": 500
+                  
+                },
+				{  "itemId": "5002",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 300,
+                    "modifiedSoq": 300
+                  
+                }
+                
+            ]
+        }
+    ]
+}
