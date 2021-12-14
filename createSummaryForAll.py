@@ -17,8 +17,8 @@ for testCaseString in testCasesStringList:
     testCaseName = testCaseData[0]
     orderPlaceDate = testCaseData[1]
     if platform == "win32":
-        script_command = "python "+current_dir +"/createSummary.py"+" "+testCaseName+" "+orderPlaceDate
+        script_command = "python "+current_dir +"/CreateSummaryLatest.py"+" "+testCaseName+" "+orderPlaceDate
         retcode = subprocess.call(script_command, shell=True)
     else:
-        script_command = "./createSummary.py"+" "+testCaseName+" "+orderPlaceDate
+        script_command = "./CreateSummaryLatest.py"+" "+testCaseName+" "+orderPlaceDate
         os.system(script_command)
