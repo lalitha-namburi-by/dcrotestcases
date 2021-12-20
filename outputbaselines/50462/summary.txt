@@ -1,7 +1,4 @@
 50462
-
-
-
 5001@7001
                   startdate                   enddate vendor  rank  volume_exact  volume_upto  soq  srs  mso  buyguide percentage  actual_percentage  order_total
 0 2021-02-01 00:00:00+00:00 2021-02-08 00:00:00+00:00   6001     3          -1.0         90.0   84    0    0                 50.0          29.787234          282
