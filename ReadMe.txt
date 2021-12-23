@@ -1,6 +1,6 @@
 RUNNING TEST CASE SUITES AND SETUP FOR DCRO
 
-Extract the stash in your local repository from [https://stash.jda.com/users/1022177/repos/dcrotestcases/browse]
+Extract the stash in your local repository from [https://github.com/lalitha-namburi-by/dcrotestcases]
 
 After extracting, install python on your system. Mac already has a default python2.7.3 with it, but safer to install python >3.5.
 
