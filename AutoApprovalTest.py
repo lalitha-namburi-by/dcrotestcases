@@ -12,8 +12,47 @@ def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
+def GenerateInputAutoApprovalParquetsFromDbData(outputDir):
+    conn = None
+    try:
+        conn = psycopg2.connect(user="postgres",
+                                password="postgres",
+                                host="localhost",
+                                port="5432",
+                                database="postgres")
 
-def GenerateAutoApprovalParquetsFromDbData(outputDir):
+
+        df = pd.read_sql(f"select * from orderheader;", conn)
+        print("outputdir = ", outputDir)
+        df = df.astype({"precisionbuildsw": int, "ordergroupbuildrule": int, "precisionloadsw": int,
+                        "vehicleloadcount": int, "keepuseradjsw": int, "optimizforcedsw": int,
+                        "systemapprovedsw": int})
+
+        #for x in df.select_dtypes(include=['datetime64']).columns.tolist():
+            #df[x] = df[x].dt.strftime('%Y-%m-%d %H:%M:%S')
+        #df['orderplacedate'] = df['orderplacedate'].astype(str)
+        #df['orderplacedate'] = df['orderplacedate'].dt.strftime('%Y-%m-%d %H:%M:%S')
+        df.to_parquet(outputDir + '/orderheader.parquet', engine='pyarrow', compression='snappy')
+
+
+        df1 = pd.read_sql(f"select * from ordertotal;", conn)
+        print("data frame = ", df1)
+        df1 = df1.astype({"type": int, "uom": int, "currencysw": int})
+
+        #for x in df1.select_dtypes(include=['datetime64']).columns.tolist():
+            #df1[x] = df1[x].dt.strftime('%Y-%m-%d %H:%M:%S')
+        # df['orderplacedate'] = df['orderplacedate'].astype(str)
+        # df['orderplacedate'] = df['orderplacedate'].dt.strftime('%Y-%m-%d %H:%M:%S')
+        df1.to_parquet(outputDir + '/ordertotal.parquet', engine='pyarrow', compression='snappy')
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+def GenerateAutoApprovalOutputParquetsFromDbData(outputDir):
     conn = None
     try:
         conn = psycopg2.connect(user="postgres",
@@ -96,6 +135,7 @@ def AutoApproval():
     total_cases = file_len(batch_cases_file_path)
     print("Total cases =", total_cases)
     test_case_outputDir = current_dir + "/dcroengineoutput"
+    test_case_inputDir = current_dir + "/dcroengineinput"
 
     with open(batch_cases_file_path) as file:
         for testCaseLine in file:
@@ -110,11 +150,14 @@ def AutoApproval():
         print("testcases =", testCaseData)
         result1 = executeTestCase(testCaseName, orderPlaceDate, fallbackOrderDays, service_endpoint_url, "false")
         outputDir = test_case_outputDir + "/" + testCaseName
+        inputDir = test_case_inputDir + "/" + testCaseName
 
         print("output dir = ", outputDir, "ordrplacedate = ", orderPlaceDate)
-        GenerateAutoApprovalParquetsFromDbData(outputDir)
+        GenerateInputAutoApprovalParquetsFromDbData(inputDir)
         time.sleep(2)
-        truncateDbTables()
+        #truncateDbTables()
+        #GenerateAutoApprovalOutputParquetsFromDbData(outputDir)
+
 
     print("done...")
 
