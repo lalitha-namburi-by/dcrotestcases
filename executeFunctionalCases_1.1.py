@@ -80,6 +80,7 @@ def generateStpParquetFromParquet(inputDir, outputDir, orderplacedate, stpenddat
 #This Function executes a testcase by triggering the service
 def executeTestCase(testCaseName,orderPlaceDate,fallbackOrderDays,service_endpoint_url, isLongTermProjections):
     response = 'executed'
+    print_green("Executing " + testCaseName)
     inputdata = {'orderPlaceDate':orderPlaceDate,'fallback_order_days':fallbackOrderDays,'isLongTermProjections':isLongTermProjections}
     try:
         res = requests.post(service_endpoint_url+"?inputFolderName="+testCaseName, json =inputdata)
