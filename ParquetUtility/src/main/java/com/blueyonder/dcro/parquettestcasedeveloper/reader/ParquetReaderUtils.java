@@ -35,7 +35,7 @@ public class ParquetReaderUtils {
 		List<SimpleGroup> simpleGroups = new ArrayList<>();
 		MessageType schema = reader.getFooter().getFileMetaData().getSchema();
 		PageReadStore pages;
-		while ((pages = reader.readNextRowGroup()) != null) {
+		while (reader.getRecordCount() != 0 && ((pages = reader.readNextRowGroup()) != null)) {
 			long rows = pages.getRowCount();
 			MessageColumnIO columnIO = new ColumnIOFactory().getColumnIO(schema);
 			RecordReader recordReader = columnIO.getRecordReader(pages, new GroupRecordConverter(schema));
