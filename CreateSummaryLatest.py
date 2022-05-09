@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from re import sub
 import pyarrow.parquet as pq
 import pandas as pd
 import json
@@ -325,6 +326,8 @@ safetystock_file_name = "safetystock"
 
 schedrcpts_file_name = "schedrcpts"
 
+vendormin_file_name = "purchasegroupvendorminimums"
+
 #TODO: seggregate input reading on the basis of internal or external codes
 
 #read master Data
@@ -408,7 +411,6 @@ masterdata_buyguide_dict = {}
 for index,row in masterdata_df.iterrows():
 	item = str(row['PP_P_ID'])
 	dest = str(row['PP_L_ID_TARGET'])
-
 	key = item+'@'+dest
 
 	#if buyguide_dict[key] is None:
@@ -489,7 +491,7 @@ for index, row in order_sku_df.iterrows():
 
 #########################################
 
-#Main processing Logic
+#Main processing Logic SKU Level view.
 for key,value in buyguide_dict.items():
 	print(key)
 	keydata = key.split('@')
@@ -548,8 +550,16 @@ for key,value in buyguide_dict.items():
 			try:
 				vendordata = sku_soq_dict[key]
 			except KeyError:
+				print('SKU ' + key + ' missing from ordersku/lrr_proj_ordersku table output')
 				continue
-			soqlist = vendordata[key1]
+
+			#Ideally key1 should be a part but in case it isn't we should continue
+			try:	
+				soqlist = vendordata[key1]
+			except KeyError:
+				print('source ' + key1 + ' missing from ordersku/lrr_proj_ordersku table output')
+				continue
+
 			split_percentage = row['SPLIT_PERCENTAGE']
 			soqtotal =0
 			for soqObject in soqlist:
@@ -648,7 +658,7 @@ for key,value in buyguide_dict.items():
 			period_upto = row['AGGREGATED_ORDER_PROJECTION_PERIOD_UPTO']
 			period_from_stamp = convert_timestamp(period_from)
 			period_upto_stamp = convert_timestamp(period_upto)
-			if((item_1 <= period_upto_stamp) &  (item_1 >=period_from_stamp)):
+			if((item_1 < period_upto_stamp) &  (item_1 >=period_from_stamp)):
 				demand= demand+ row['AGGREGATED_ORDER_PROJECTION_MEAN']
 		demandlist.append(demand)
 
@@ -659,7 +669,7 @@ for key,value in buyguide_dict.items():
 			period_from_stamp = convert_timestamp(period_from)
 			period_upto_stamp = convert_timestamp(period_upto)
 
-			if((item_1 <= period_upto_stamp) &  (item_1 >=period_from_stamp)):
+			if((item_1 < period_upto_stamp) &  (item_1 >=period_from_stamp)):
 				ss= ss+ row['SAFETY_STOCK_PER_DAY']
 		sslist.append(ss)
 
@@ -843,9 +853,232 @@ for key,value in buyguide_dict.items():
 
 	summaryBuilder.appendToSummary(df_2.to_string())
 
+#############################################
+#Vendor Level View.
+
+vendorPUGDict = {}
+pugID_pubsubID_dict = {}
+
+for index,row in masterdata_df.iterrows():
+	item = str(row['PP_P_ID'])
+	dest = str(row['PP_L_ID_TARGET'])
+	source = str(row['PP_L_ID_SOURCE'])
+	sourceEC = str(row['L_EXTERNAL_CODE_SOURCE'])
+
+	try:
+		pug_dict = vendorPUGDict[source]
+	except KeyError:
+		pug_dict = {}
+		vendorPUGDict[source] = pug_dict
+
+	pugID = str(row['PP_PUG_ID'])
+	subPUGID = str(row['PP_PURCHASE_SUB_GROUP'])	
+
+	try:
+		pubsub_list = pugID_pubsubID_dict[pugID]
+	except KeyError:
+		pubsub_list = []
+		pugID_pubsubID_dict[pugID] = pubsub_list
+	
+	if subPUGID not in pubsub_list:
+		pubsub_list.append(subPUGID)
+
+	pug_key = str(pugID + '@' + subPUGID)
+
+	try:
+		datarow = pug_dict[pug_key]
+		continue
+	except KeyError:
+		datarow = []
+		pug_dict[pug_key] = datarow
+
+	#filter the columns/value needed from masterdata
+	load_build_rule = str(row['PUG_LBRE_ID'])#0
+	load_min_rule = str(row['PUG_LMRE_ID'])#1
+	load_tolerance = str(row['PUG_LOAD_TOLERANCE'])#2
+	load_build_adj_down_tolerance = str(row['PUG_LOAD_BUILD_DOWN_TOLERANCE'])#3
+	load_build_adj_up_tolerance = str(row['PUG_LOAD_BUILD_UP_TOLERANCE'])#4
+	vendor_base_uom = str(row['P_UY_ID'])#5 --> item level : How to deal with item level ?
+	vendor_base_cu = str(row['VOP_CU_ID'])#6 --> item level : How to deal with item level ?
+
+	#prepare filtered row
+	valuerow = []
+	valuerow.append(load_build_rule) 
+	valuerow.append(load_min_rule)	 	
+	valuerow.append(load_tolerance)
+	valuerow.append(load_build_adj_down_tolerance)
+	valuerow.append(load_build_adj_up_tolerance)
+	valuerow.append(vendor_base_uom)
+	valuerow.append(vendor_base_cu)
+
+	datarow.append(valuerow)
+
+#read vendor min parquet
+vendor_min_df = input_data_file_system.getDataFrame(vendormin_file_name,buildFilter(['PUGVM_PUG_ID'],[None]),None)
+
+##Building vendor constraints view##
+for vendor in vendorPUGDict:	
+	#print("Vendor : " + vendor + "\n")
+	summaryBuilder.appendToSummary("Vendor : " + vendor)
+
+	vm_uom_list = []
+	vm_cu_list = []
+	vm_min_list = []
+	pug_list = []
+	sub_pug_list = []
+	load_build_rule_list = []
+	load_min_rule_list = []
+	load_tolerance_list = []
+	load_build_adj_up_list = []
+	load_build_adj_down_list = []
+	base_uom_list = []
+	base_cu_list = []
+
+	pugDict = vendorPUGDict.get(vendor)
+
+	for pugKey in pugDict:
+		keydata = pugKey.split('@')
+		pugID = int(keydata[0])
+		subPUGID = str(keydata[1])
+
+		values = pugDict.get(pugKey)
+
+		for valuerow in values:
+			load_build_rule = valuerow[0]
+			load_min_rule =  valuerow[1]
+			load_tolerance =  valuerow[2]
+			load_build_adj_down_tolerance =  valuerow[3]
+			load_build_adj_up_tolerance =  valuerow[4]
+			vendor_base_uom =  valuerow[5]
+			vendor_base_cu =  valuerow[6]
+
+			filtered_vendormin_df = vendor_min_df[(vendor_min_df['PUGVM_PUG_ID'] == pugID) & (vendor_min_df['PUGVM_PURCHASE_SUB_GROUP'] == subPUGID)]
+			
+			if filtered_vendormin_df.empty:
+				vm_uom_list.append(-99999)
+				vm_cu_list.append(-99999)
+				vm_min_list.append(1.0)
+				pug_list.append(pugID)
+				sub_pug_list.append(subPUGID)
+				load_build_rule_list.append(load_build_rule)
+				load_min_rule_list.append(load_min_rule)
+				load_tolerance_list.append(load_tolerance)
+				load_build_adj_up_list.append(load_build_adj_down_tolerance)
+				load_build_adj_down_list.append(load_build_adj_up_tolerance)
+				base_uom_list.append(vendor_base_uom)
+				base_cu_list.append(vendor_base_cu)
+
+			else:
+				for index,row in filtered_vendormin_df.iterrows():
+					vm_uom = row['PUGVM_UY_ID']
+					vm_cu = row['PUGVM_CU_ID']
+					vm_min = row['PUGVM_MIN_VALUE']
+					vm_uom_list.append(vm_uom)
+					vm_cu_list.append(vm_cu)
+					vm_min_list.append(vm_min)
+					pug_list.append(pugID)
+					sub_pug_list.append(subPUGID)
+					load_build_rule_list.append(load_build_rule)
+					load_min_rule_list.append(load_min_rule)
+					load_tolerance_list.append(load_tolerance)
+					load_build_adj_up_list.append(load_build_adj_down_tolerance)
+					load_build_adj_down_list.append(load_build_adj_up_tolerance)
+					base_uom_list.append(vendor_base_uom)
+					base_cu_list.append(vendor_base_cu)
+			
+	data_3 = {'pug_id':pug_list, 'subpug_id':sub_pug_list, 'load_build_rule': load_build_rule_list, 'load_min_rule': load_min_rule_list, 'load_tolerance': load_tolerance_list, 'load_build_adj_down' : load_build_adj_down_list, 'load_build_adj_up': load_build_adj_up_list, 'base_uom' : base_uom_list, 'vm_uom' : vm_uom_list, 'base_cu' : base_cu_list, 'vm_cu' : vm_cu_list, 'vm_min_value' : vm_min_list}
+	df_3 = pd.DataFrame(data_3)
+	df_3.sort_values(by=['pug_id','subpug_id'], inplace=True)
+
+	summaryBuilder.appendToSummary(df_3.to_string())
+
+##Building Vendor Ordering view##
+
+order_detail_dict = {} 
+for index,row in order_header_df.iterrows():
+	orderplacedate = row['orderplacedate']
+	orderid = row['orderid']
+	order_detail_dict[orderid] = orderplacedate
+
+for pugID in pugID_pubsubID_dict:
+	pugsubID_list = pugID_pubsubID_dict.get(pugID)
+	filtered_ordersku_df = order_sku_df[(order_sku_df['ordergroup'] == pugID)]
+	
+	summaryBuilder.appendToSummary("PUGID : " + pugID)
+
+	subpug_source_dest_soq_dict = {}
+
+	for index,row in filtered_ordersku_df.iterrows():
+		sub_pug = row['ordergroupmember']
+		source = row['source']
+		dest = row['dest']
+		orderid = row['grouporderid']
+		soq = row['soq']
+		orderplacedate = order_detail_dict[orderid]
+		timestampOPD = convert_timestamp(pd.Timestamp(orderplacedate))
+		key_source_dest = source+"@"+dest
+		try:
+			source_dest_soq_dict = subpug_source_dest_soq_dict[sub_pug]
+		except KeyError:
+			source_dest_soq_dict = {}
+			subpug_source_dest_soq_dict[sub_pug] = source_dest_soq_dict
+		
+		try:
+			opd_soq_dict = source_dest_soq_dict[key_source_dest]
+		except KeyError:
+			opd_soq_dict = {}
+			source_dest_soq_dict[key_source_dest] = opd_soq_dict
+		
+		try:
+			soqObject = opd_soq_dict[timestampOPD]
+		except KeyError:
+			soqObject = SOQ(orderplacedate,0.0)
+			opd_soq_dict[timestampOPD] = soqObject
+
+		soqObject.soq = soqObject.soq+soq
+
+	orderplacedatelist = []
+	sourcelist = []
+	destlist = []
+	pugsublist = []
+	soqlist = []
+	vm_min_list = []
+
+	filtered_df3 = df_3[(df_3['pug_id'] == pugID)]
+
+	for subpug in subpug_source_dest_soq_dict:
+		
+		filtered_df3_pugsub = filtered_df3[(filtered_df3['subpug_id'] == subpug)]
+
+		for index,row in filtered_df3_pugsub.iterrows():
+			vm_min = row['vm_min_value']
+			break
+		
+		source_dest_soq_dict = subpug_source_dest_soq_dict.get(subpug)
+		for source_dest in source_dest_soq_dict:
+			keydata = source_dest.split("@")
+			source = keydata[0]
+			dest = keydata[1]
+
+			opd_soq_dict = source_dest_soq_dict.get(source_dest)
+
+			for timestampOPD in opd_soq_dict:
+				soqObject = opd_soq_dict.get(timestampOPD)
+				orderplacedate = soqObject.opd
+				soq = soqObject.soq
+				orderplacedatelist.append(orderplacedate)
+				sourcelist.append(source)
+				destlist.append(dest)
+				pugsublist.append(subpug)
+				soqlist.append(soq)
+				vm_min_list.append(vm_min)
+	
+	data_4 = {'orderdate': orderplacedatelist, 'source': sourcelist, 'dest': destlist, 'subpugid': pugsublist, 'soq': soqlist, 'vm_min_value': vm_min_list}
+	df_4 = pd.DataFrame(data_4)
+	df_4.sort_values(by=['subpugid','source','dest'], inplace=True)
+	summaryBuilder.appendToSummary(df_4.to_string())
+
 
 #############################################
 #Post processing
-
-
 print(summaryBuilder.getSummary())

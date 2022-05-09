@@ -64,15 +64,17 @@ global connection
 orderheader_dict = {}
 sku_soq_dict = {}
 
+print('DB Connection trying')
+
 def get_data_from_db(sql_query):
     df = pd.read_sql(sql_query,connection)
     return df
 
-db_user_name = 'stratosphere@o3kztgfjajz5xvuct4g8sqib'
-db_password = 'IK0rkkafFiLgsInixkQ1'
+db_user_name = 'stratosphere@o3lm1hpcc3g7g7jqoxmu6ffz'
+db_password = '1DWvt4Cue5AI2Ub3GYGb'
 db_hostname = 'localhost'
 db_port = 5111
-db_name = 'o4vv6gxfci6fc02c4rz5vclp'
+db_name = 'postgres'
 
 try:
     connection = psycopg2.connect(user = db_user_name,
@@ -80,8 +82,8 @@ try:
                                   host = db_hostname,
                                   port = db_port,
                                   database = db_name)
-
-    orderheader_sql_query = "select orderid,arrivdate from orderheader where orderheader.createdate ='2021-09-27 14:18:00' union select orderid,arrivdate from lrr_proj_orderheader where lrr_proj_orderheader.createdate ='2021-09-27 14:18:00'"
+    print('Connection obtained')
+    orderheader_sql_query = "select orderid,arrivdate from orderheader where orderheader.createdate ='2022-05-04 11:40:00' union select orderid,arrivdate from lrr_proj_orderheader where lrr_proj_orderheader.createdate ='2022-05-04 11:40:00'"
     orderheaderdata = get_data_from_db(orderheader_sql_query)
     print(orderheaderdata)
     for index,row in orderheaderdata.iterrows():
@@ -90,7 +92,7 @@ try:
         orderheader_dict[orderid] = orderplacedate_1
 
 
-    ordersku_sql_query = "select ordersku.item,ordersku.dest,ordersku.source,ordersku.soq,ordersku.orderid,ordersku.arrivdate, orderheader.createdate from ordersku,orderheader where orderheader.orderid=ordersku.orderid and orderheader.createdate ='2021-09-27 14:18:00' union select lrr_proj_ordersku.item,lrr_proj_ordersku.dest,lrr_proj_ordersku.source,lrr_proj_ordersku.soq,lrr_proj_ordersku.orderid,lrr_proj_ordersku.arrivdate, lrr_proj_orderheader.createdate from lrr_proj_ordersku,lrr_proj_orderheader where lrr_proj_orderheader.orderid=lrr_proj_ordersku.orderid and lrr_proj_orderheader.createdate ='2021-09-27 14:18:00'"
+    ordersku_sql_query = "select ordersku.item,ordersku.dest,ordersku.source,ordersku.soq,ordersku.orderid,ordersku.arrivdate, orderheader.createdate from ordersku,orderheader where orderheader.orderid=ordersku.orderid and orderheader.createdate ='2022-05-04 11:40:00' union select lrr_proj_ordersku.item,lrr_proj_ordersku.dest,lrr_proj_ordersku.source,lrr_proj_ordersku.soq,lrr_proj_ordersku.orderid,lrr_proj_ordersku.arrivdate, lrr_proj_orderheader.createdate from lrr_proj_ordersku,lrr_proj_orderheader where lrr_proj_orderheader.orderid=lrr_proj_ordersku.orderid and lrr_proj_orderheader.createdate ='2022-05-04 11:40:00'"
 
     orderskudata = get_data_from_db(ordersku_sql_query)
     print(orderskudata)
@@ -127,7 +129,7 @@ finally:
 
 
 
-
+print('ABS Connection trying')
 
 proxy = 'http://bywww.blue-yonder.org:8888'
 
@@ -137,12 +139,12 @@ os.environ['https_proxy'] = proxy
 os.environ['HTTPS_PROXY'] = proxy
 
 
-account_name = 'bvzdtlbxhptci'
-sas_token = 'se=2021-11-30T00%3A00%3A00Z&sp=rwdl&sv=2019-02-02&sr=c&sig=JWxcQoJBRaMpxNpBH5/GhF9lXfa5MpDkNKlXPddTHFA%3D'
-container_name = 'lrr-dev-aggregated-order-projections'
+account_name = 'cpgsz5l7eccba'
+sas_token = 'se=2030-01-10T00%3A09%3A00Z&sp=rwdl&sv=2019-02-02&sr=c&sig=F345V/StCG1tzHCGAku44GYCgHAknBNI61vPNmc%2Br5A%3D'
+container_name = 'loblaws-prod2-aggregated-order-projections'
 
-order_place_date_folder = '2021-05-15'
-timestamp_folder='1633972401'
+order_place_date_folder = '2022-05-04'
+timestamp_folder='1651662019'
 
 block_blob_service = BlockBlobService(account_name=account_name, sas_token=sas_token)
 
@@ -174,7 +176,7 @@ for index,row in buyGuideParquet.iterrows():
     datalist.append(row)
     
     
-filepath = '/Users/1024203/Desktop'+'/summary.txt'
+filepath = '/Users/1022773/Desktop'+'/summary.txt'
 text_file = open(filepath, 'w')
 
 
@@ -192,7 +194,10 @@ manualordersdata = getDataFrameFromABS(block_blob_service,container_name,manual_
 additional_vendor_orders_parquet = 'dcro-input/'+order_place_date_folder+'/'+timestamp_folder+'/batch0/snd-data/additional_vendor_orders.parquet'
 additional_vendor_orders_data=getDataFrameFromABS(block_blob_service,container_name,additional_vendor_orders_parquet)
 
-#print("buyguide dict", buyguide_dict)
+print("buyguide dict", buyguide_dict)
+
+print('Doing summary calcualtion')
+
 for key,value in buyguide_dict.items():
     print(key)
     keydata = key.split('@')
@@ -254,7 +259,12 @@ for key,value in buyguide_dict.items():
                 vendordata = sku_soq_dict[key]
             except KeyError:
                 continue
-            soqlist = vendordata[key1]
+
+            try:
+                soqlist = vendordata[key1]
+            except KeyError:
+                continue
+
             split_percentage = row['SPLIT_PERCENTAGE']
             soqtotal =0
             for soqObject in soqlist:
@@ -360,7 +370,7 @@ for key,value in buyguide_dict.items():
             period_upto = row['AGGREGATED_ORDER_PROJECTION_PERIOD_UPTO']
             period_from_stamp = convert_timestamp(period_from)
             period_upto_stamp = convert_timestamp(period_upto)
-            if((item_1 <= period_upto_stamp) &  (item_1 >=period_from_stamp)):
+            if((item_1 < period_upto_stamp) &  (item_1 >=period_from_stamp)):
                 demand= demand+ row['AGGREGATED_ORDER_PROJECTION_MEAN']
         demandlist.append(demand)
 
@@ -371,7 +381,7 @@ for key,value in buyguide_dict.items():
             period_from_stamp = convert_timestamp(period_from)
             period_upto_stamp = convert_timestamp(period_upto)
             
-            if((item_1 <= period_upto_stamp) &  (item_1 >=period_from_stamp)):
+            if((item_1 < period_upto_stamp) &  (item_1 >=period_from_stamp)):
                 ss= ss+ row['SAFETY_STOCK_PER_DAY']
         sslist.append(ss)
 
@@ -560,4 +570,4 @@ for key,value in buyguide_dict.items():
     text_file.write('\n')
 
 text_file.close()
-
+print('Summary calcualtion done')
