@@ -1,0 +1,6 @@
+import urllib.parse
+from enum import Enum
+decoded = urllib.parse.unquote("se%3D2030-01-10T00%253A09%253A00Z%26sp%3Drwdl%26sv%3D2019-02-02%26sr%3Dc%26sig%3DXswmg%2F%252BXMnmlO4P3Ilcf%252Bw9cSTy9dTsYlXF2FLuBUsQ%253D")
+print(decoded)
+
+se=2030-01-10T00%3A09%3A00Z&sp=rwdl&sv=2019-02-02&sr=c&sig=Xswmg/%2BXMnmlO4P3Ilcf%2Bw9cSTy9dTsYlXF2FLuBUsQ%3D
