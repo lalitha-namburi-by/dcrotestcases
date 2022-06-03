@@ -23,13 +23,16 @@ import com.blueyonder.dcro.parquettestcasedeveloper.entities.Parquet;
 @Component
 public class ParquetReaderUtils {
 	
-	public Parquet getParquetData(String filePath) throws IOException {
-		ParquetFileReader reader = getParquetReader(filePath);
-		List<SimpleGroup> simpleGroups = getSimpleGroupData(reader);
-		List<Type> fields = getFields(reader);
-		reader.close();
-		return new Parquet(simpleGroups, fields);
-	}
+  public Parquet getParquetData(String filePath) throws IOException {
+    ParquetFileReader reader = getParquetReader(filePath);
+    if (reader != null && reader.getRecordCount() > 0) {
+      List<SimpleGroup> simpleGroups = getSimpleGroupData(reader);
+      List<Type> fields = getFields(reader);
+      reader.close();
+      return new Parquet(simpleGroups, fields);
+    }
+    return null;
+  }
 	
 	public List<SimpleGroup> getSimpleGroupData(ParquetFileReader reader) throws IOException{
 		List<SimpleGroup> simpleGroups = new ArrayList<>();
