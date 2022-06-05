@@ -1,0 +1,33 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2021-02-01",
+    "inputFolderName": "AVO-50631",
+    "groupOrderId": "50631",
+    "orderGroup": "2002",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "SB-003",
+            "orderId": "50631-1",
+            "items": 
+			[
+                {  "itemId": "5006",
+                    "sourceId": "6002",
+                    "destinationId": "7002",
+                    "suggestedSoq": 10,
+                    "modifiedSoq": 500
+                  
+                },{  "itemId": "5007",
+                    "sourceId": "6002",
+                    "destinationId": "7002",
+                    "suggestedSoq": 740,
+                    "modifiedSoq": 800
+                  
+                }
+                
+            ]
+        }
+        
+    ]
+}

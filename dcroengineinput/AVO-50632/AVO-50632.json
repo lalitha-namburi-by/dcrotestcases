@@ -1,0 +1,27 @@
+{
+    "reset": "false",
+    "force_optimize": "true",
+    "orderPlaceDate": "2021-02-01",
+    "inputFolderName": "AVO-50632",
+    "groupOrderId": "50632",
+    "orderGroup": "2003",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "SB-004",
+            "orderId": "50632-1",
+            "items": 
+			[
+                {  "itemId": "5008",
+                    "sourceId": "6001",
+                    "destinationId": "7003",
+                    "suggestedSoq": 10,
+                    "modifiedSoq": 150
+                  
+                }
+                
+            ]
+        }
+        
+    ]
+}

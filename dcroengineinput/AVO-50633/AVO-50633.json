@@ -1,0 +1,61 @@
+{
+    "reset": "true",
+    "force_optimize": "true",
+    "orderPlaceDate": "2021-02-01",
+    "inputFolderName": "AVO-50633",
+    "groupOrderId": "50633",
+    "orderGroup": "2001",
+    "orderGroupMembers": 
+	[
+        {
+            "orderGroupMember": "SB-001",
+            "orderId": "50633-1",
+            "items": 
+			[
+                {  "itemId": "5001",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 10,
+                    "modifiedSoq": 300
+                  
+                },{  "itemId": "5002",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 740,
+                    "modifiedSoq": 500
+                  
+                },{  "itemId": "5003",
+                    "sourceId": "6001",
+                    "destinationId": "7001",
+                    "suggestedSoq": 300,
+                    "modifiedSoq": 50
+                  
+                }
+                
+            ]
+        },
+		{
+            "orderGroupMember": "SB-002",
+            "orderId": "50633-2",
+            "items": 
+			[
+              	{   "itemId": "5004",
+                    "sourceId": "6002",
+                    "destinationId": "7001",
+                    "suggestedSoq": 300,
+                    "modifiedSoq": 100
+                  
+                },
+				{   "itemId": "5005",
+                    "sourceId": "6002",
+                    "destinationId": "7001",
+                    "suggestedSoq": 300,
+                    "modifiedSoq": 450
+                  
+                }
+			
+                                
+            ]
+        }
+    ]
+}
