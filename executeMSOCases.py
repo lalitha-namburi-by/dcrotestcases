@@ -132,23 +132,23 @@ orderheadersortcolumns=["source","dest","transmode","orderplacedate","departured
 orderexceptioncolumns = ["exception","exceptiondate","descr","item","source","dest","transmode","ordergroup","ordergroupmember"]
 orderexceptionsortcolumns=["exception","exceptiondate","descr","item","source","dest","transmode","ordergroup","ordergroupmember"]
 
-orderskucolumns=["item","dest","source","transmode","arrivdate","ordercovdate","mincovdate","orderpointdate","orderpointprojoh","orderpointssqty","status","adjskucovdate","orderuptoleveldate","orderuptolevelssqty","orderuptolevelprojoh","unroundedsoq","soq","delaydur","soqcovdur","systemsoq","expdate","restrictedsoqcovdate","soqrestriction","unrestrictedsoq","orderpointavailsupply","orderplacedateprojoh","orderuptolevelavailsupply","orderpointadjreasons","orderuptoleveladjreasons","supporderqty","calcsoqsw","finalunitcost","ordergroup","ordergroupmember","orderplacessdisplayqty","orderpointssdisplayqty","orderuptolevelssdisplayqty","sourceinvstatus","unconstrsoq","ohpost","oh","sourcing","usersoqoverride"]
-orderskusortcolumns=["item","dest","source","transmode","arrivdate","ordercovdate","mincovdate","orderpointdate","orderpointprojoh","orderpointssqty","status","adjskucovdate","orderuptoleveldate","orderuptolevelssqty","orderuptolevelprojoh","unroundedsoq","soq","delaydur","soqcovdur","systemsoq","expdate","restrictedsoqcovdate","soqrestriction","unrestrictedsoq","orderpointavailsupply","orderplacedateprojoh","orderuptolevelavailsupply","orderpointadjreasons","orderuptoleveladjreasons","supporderqty","calcsoqsw","finalunitcost","ordergroup","ordergroupmember","orderplacessdisplayqty","orderpointssdisplayqty","orderuptolevelssdisplayqty","sourceinvstatus","unconstrsoq","ohpost","oh","sourcing","usersoqoverride"]
+orderskucolumns=["item","dest","source","transmode","arrivdate","ordercovdate","mincovdate","orderpointdate","orderpointprojoh","orderpointssqty","status","adjskucovdate","orderuptoleveldate","orderuptolevelssqty","orderuptolevelprojoh","unroundedsoq","soq","avo_qty","delaydur","soqcovdur","systemsoq","expdate","restrictedsoqcovdate","soqrestriction","unrestrictedsoq","orderpointavailsupply","orderplacedateprojoh","orderuptolevelavailsupply","orderpointadjreasons","orderuptoleveladjreasons","calcsoqsw","finalunitcost","ordergroup","ordergroupmember","orderplacessdisplayqty","orderpointssdisplayqty","orderuptolevelssdisplayqty","sourceinvstatus","unconstrsoq","ohpost","oh","sourcing","usersoqoverride"]
+orderskusortcolumns=["item","dest","source","transmode","arrivdate","ordercovdate","mincovdate","orderpointdate","orderpointprojoh","orderpointssqty","status","adjskucovdate","orderuptoleveldate","orderuptolevelssqty","orderuptolevelprojoh","unroundedsoq","soq","avo_qty","delaydur","soqcovdur","systemsoq","expdate","restrictedsoqcovdate","soqrestriction","unrestrictedsoq","orderpointavailsupply","orderplacedateprojoh","orderuptolevelavailsupply","orderpointadjreasons","orderuptoleveladjreasons","calcsoqsw","finalunitcost","ordergroup","ordergroupmember","orderplacessdisplayqty","orderpointssdisplayqty","orderuptolevelssdisplayqty","sourceinvstatus","unconstrsoq","ohpost","oh","sourcing","usersoqoverride"]
 
 orderskudetailcolumns=["item","dest","departuredate","deliverydate","totalleadtime","loaddur","transitdur","unloaddur","adjskucovdur","avgreplenqty","stocklowdate","stocklowdur","stocklowqty","stockoutdate","stockoutdur","stockoutqty","arrivcovdur","sysorderpointdate","sysorderuptoleveldate","precisionbuildsw","precisionloadsw"]
 orderskudetailsortcolumns=["item","dest","departuredate","deliverydate","totalleadtime","loaddur","transitdur","unloaddur","adjskucovdur","avgreplenqty","stocklowdate","stocklowdur","stocklowqty","stockoutdate","stockoutdur","stockoutqty","arrivcovdur","sysorderpointdate","sysorderuptoleveldate","precisionbuildsw","precisionloadsw"]
 
-orderskutotalcolumns=["item","dest","uom","qty","unroundedqty"]
-orderskutotalsortcolumns=["item","dest","uom","qty","unroundedqty"]
+orderskutotalcolumns=["item","dest","uom","qty","unroundedqty","avo_qty"]
+orderskutotalsortcolumns=["item","dest","uom","qty","unroundedqty","avo_qty"]
 
-ordertotalcolumns=["type","uom", "qty","unroundedqty"]
-ordertotalsortcolumns=["type","uom", "qty","unroundedqty"]
+ordertotalcolumns=["type","uom", "qty","unroundedqty","avo_qty"]
+ordertotalsortcolumns=["type","uom", "qty","unroundedqty","avo_qty"]
 
 vehicleloadcolumns=["transmode","shipdate","arrivdate","sourcestatus","deststatus","lbstatus","lbsource","transmodeminmetsw","tolerancecapmetsw","maxcapacitymetsw","vendorminmetsw","orderoptseqnum","maxcapacityexceededsw","approvalstatus"]
 vehicleloadsortcolumns=["transmode","shipdate","arrivdate","sourcestatus","deststatus","lbstatus","lbsource","transmodeminmetsw","tolerancecapmetsw","maxcapacitymetsw","vendorminmetsw","orderoptseqnum","maxcapacityexceededsw","approvalstatus"]
 
-vehicleloadlinecolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest"]
-vehicleloadlinesortcolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest"]
+vehicleloadlinecolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest","avo_qty"]
+vehicleloadlinesortcolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest","avo_qty"]
 
 vehicleloadtotalcolumns=[ "uom","qty"]
 vehicleloadtotalsortcolumns=["uom","qty"]

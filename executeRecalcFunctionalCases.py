@@ -139,17 +139,17 @@ orderskusortcolumns=["item","dest","source","transmode","arrivdate","ordercovdat
 orderskudetailcolumns=["item","dest","departuredate","deliverydate","totalleadtime","loaddur","transitdur","unloaddur","adjskucovdur","avgreplenqty","stocklowdate","stocklowdur","stocklowqty","stockoutdate","stockoutdur","stockoutqty","arrivcovdur","sysorderpointdate","sysorderuptoleveldate","precisionbuildsw","precisionloadsw"]
 orderskudetailsortcolumns=["item","dest","departuredate","deliverydate","totalleadtime","loaddur","transitdur","unloaddur","adjskucovdur","avgreplenqty","stocklowdate","stocklowdur","stocklowqty","stockoutdate","stockoutdur","stockoutqty","arrivcovdur","sysorderpointdate","sysorderuptoleveldate","precisionbuildsw","precisionloadsw"]
 
-orderskutotalcolumns=["item","dest","uom","qty","unroundedqty"]
-orderskutotalsortcolumns=["item","dest","uom","qty","unroundedqty"]
+orderskutotalcolumns=["item","dest","uom","qty","unroundedqty","avo_qty"]
+orderskutotalsortcolumns=["item","dest","uom","qty","unroundedqty","avo_qty"]
 
-ordertotalcolumns=["type","uom", "qty","unroundedqty"]
-ordertotalsortcolumns=["type","uom", "qty","unroundedqty"]
+ordertotalcolumns=["type","uom", "qty","unroundedqty","avo_qty"]
+ordertotalsortcolumns=["type","uom", "qty","unroundedqty","avo_qty"]
 
 vehicleloadcolumns=["transmode","shipdate","arrivdate","sourcestatus","deststatus","lbstatus","lbsource","transmodeminmetsw","tolerancecapmetsw","maxcapacitymetsw","vendorminmetsw","orderoptseqnum","maxcapacityexceededsw","approvalstatus"]
 vehicleloadsortcolumns=["transmode","shipdate","arrivdate","sourcestatus","deststatus","lbstatus","lbsource","transmodeminmetsw","tolerancecapmetsw","maxcapacitymetsw","vendorminmetsw","orderoptseqnum","maxcapacityexceededsw","approvalstatus"]
 
-vehicleloadlinecolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest"]
-vehicleloadlinesortcolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest"]
+vehicleloadlinecolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest","avo_qty"]
+vehicleloadlinesortcolumns=["item","primaryitem","qty","schedshipdate","schedarrivdate","expdate","lbsource","sourcing","source","dest","avo_qty"]
 
 vehicleloadtotalcolumns=[ "uom","qty"]
 vehicleloadtotalsortcolumns=["uom","qty"]
@@ -315,7 +315,7 @@ generateHTMLReport(batchrunid,bacthrun_results_path,result_dict,filenames,detail
 
 #table1 = pq.read_table('/Users/1022177/BYRepository/dcro/resources/sampletestdata/OOPT-OGT-305.01/masterdata.parquet')
 #table2 = pq.read_table('/Users/1022177/BYRepository/dcro/resources/sampletestdata/OOPT-OGT-305.03/masterdata.parquet')
-#orderskucolumns=["item","dest","source","transmode","arrivdate","ordercovdate","mincovdate","orderpointdate","orderpointprojoh","orderpointssqty","status","adjskucovdate","orderuptoleveldate","orderuptolevelssqty","orderuptolevelprojoh","unroundedsoq","soq","delaydur","soqcovdur","systemsoq","expdate","restrictedsoqcovdate","soqrestriction","unrestrictedsoq","orderpointavailsupply","orderplacedateprojoh","orderuptolevelavailsupply","orderpointadjreasons","orderuptoleveladjreasons","supporderqty","calcsoqsw","finalunitcost","ordergroup","ordergroupmember","orderplacessdisplayqty","orderpointssdisplayqty","orderuptolevelssdisplayqty","sourceinvstatus","unconstrsoq","ohpost","oh","sourcing"]
+#orderskucolumns=["item","dest","source","transmode","arrivdate","ordercovdate","mincovdate","orderpointdate","orderpointprojoh","orderpointssqty","status","adjskucovdate","orderuptoleveldate","orderuptolevelssqty","orderuptolevelprojoh","unroundedsoq","soq","delaydur","soqcovdur","systemsoq","expdate","restrictedsoqcovdate","soqrestriction","unrestrictedsoq","orderpointavailsupply","orderplacedateprojoh","orderuptolevelavailsupply","orderpointadjreasons","orderuptoleveladjreasons","calcsoqsw","finalunitcost","ordergroup","ordergroupmember","orderplacessdisplayqty","orderpointssdisplayqty","orderuptolevelssdisplayqty","sourceinvstatus","unconstrsoq","ohpost","oh","sourcing"]
 
 #outputfile="/Users/1022177/Desktop/dcroengineoutput/DCRO-100.01/ordersku.parquet"
 
